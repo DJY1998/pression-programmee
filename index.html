@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Séquence programmée – Pression</title>
+  <title>Programmiertes Lernen – Druck</title>
 
-  <!-- Pour le rendu des formules écrites en "markdown" LaTeX : $p = \frac{F}{A}$ -->
+  <!-- Für Formeln im LaTeX-ähnlichen Markdown: $p = \frac{F}{A}$ -->
   <script>
     window.MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
@@ -303,7 +303,7 @@
     }
 
     .lockable.locked::after {
-      content: "Lis la section demandée puis valide la lecture pour débloquer ces questions.";
+      content: "Lies zuerst den angegebenen Abschnitt und bestätige die Lektüre, um die Fragen freizuschalten.";
       position: absolute;
       inset: 0;
       display: flex;
@@ -455,7 +455,7 @@
       color: var(--muted);
     }
 
-    /* Side panel */
+    /* Seitenpanel */
     .side-card-title {
       font-size: 0.95rem;
       font-weight: 600;
@@ -527,43 +527,76 @@
       font-size: 0.75rem;
       color: var(--muted);
     }
+
+    /* Reward image */
+    #reward-badge {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      width: 150px;
+      height: 150px;
+      border-radius: 1rem;
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.92);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: all 0.25s ease-out;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    #reward-badge.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #reward-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- Colonne principale : séquence programmée -->
+    <!-- Hauptspalte: programmierte Sequenz -->
     <main class="card">
       <div class="header">
         <div>
-          <div class="title-main">Pression – Parcours guidé</div>
+          <div class="title-main">Druck – Geführter Parcours</div>
           <p class="subtitle">
-            Travaille à ton rythme. Lis les consignes, consulte le support de cours,
-            réponds aux questions. Si ta réponse est juste, tu avances. Sinon, tu passes
-            par une étape d’aide avant de continuer.
+            Arbeite in deinem Tempo. Lies die Hinweise, schlage im Skript nach
+            und beantworte die Fragen. Bei einer richtigen Antwort geht es weiter;
+            bei einem Fehler gibt es eine kurze Hilfe, bevor du fortfährst.
           </p>
         </div>
-        <div class="pill">Enseignement programmé</div>
+        <div class="pill">Programmiertes Lernen</div>
       </div>
 
       <div class="objectifs">
         <div class="objectif-chip">
-          <span></span> Pression comme $p = \dfrac{F}{A}$
+          <span></span> Druck als $p = \dfrac{F}{A}$
         </div>
         <div class="objectif-chip">
-          <span></span> Unités: Pa, bar, mmHg
+          <span></span> Einheiten: Pa, bar, mmHg
         </div>
         <div class="objectif-chip">
-          <span></span> Loi hydrostatique $p = p_0 + \rho g h$
+          <span></span> Hydrostatik $p = p_0 + \rho g h$
         </div>
         <div class="objectif-chip">
-          <span></span> Applications simples (eau, Hg)
+          <span></span> Einfache Anwendungen (Wasser, Hg)
         </div>
       </div>
 
       <div class="progress-wrapper">
       <div class="progress-label-row">
-        <div>Progression</div>
-        <div id="progress-text">0 / 8 étapes validées</div>
+        <div>Fortschritt</div>
+        <div id="progress-text">0 / 8 Schritte bestätigt</div>
       </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill" id="progress-bar"></div>
@@ -571,70 +604,69 @@
       </div>
 
       <div class="steps-container">
-        <!-- Étape 0 : accueil / explication -->
+        <!-- Schritt 0: Intro -->
         <section class="step active" id="step-intro" data-index="0">
-          <div class="step-tag">Point de départ</div>
-          <h2 class="step-title">Comment fonctionne ce parcours&nbsp;?</h2>
+          <div class="step-tag">Startpunkt</div>
+          <h2 class="step-title">Wie funktioniert dieser Parcours?</h2>
           <p class="step-instruction">
-            Tu sors de 4h de dissertation – ici, l’objectif est de travailler de manière
-            autonome et calme. Tu peux revenir en arrière à tout moment.
+            Du kommst vielleicht aus einer langen Arbeitsphase – hier sollst du ruhig und selbständig arbeiten können.
+            Du kannst jederzeit zurückspringen.
           </p>
           <div class="reading-box">
-            <strong>Matériel nécessaire</strong><br />
-            • Support de cours <em>« Temperatur – Wärme »</em>, sections <strong>Druck</strong> et
-            <strong>Druck in einer ruhenden Flüssigkeit</strong> (partie sur le baromètre de Torricelli). <br />
-            • Ta calculatrice.<br />
-            • De quoi noter (brouillon).
+            <strong>Benötigtes Material</strong><br />
+            • Dein Skript <em>« Temperatur – Wärme »</em>, Abschnitte <strong>Druck</strong> und
+            <strong>Druck in einer ruhenden Flüssigkeit</strong> (Teil zum Torricelli-Barometer).<br />
+            • Dein Taschenrechner.<br />
+            • Etwas zum Notieren (Schmierblatt).
           </div>
           <p class="step-instruction">
-            Tu vas avancer par petites étapes. Après chaque question, tu reçois une
-            rétroaction immédiate. En cas d’erreur, tu passes par une mini-explication
-            avant d’essayer à nouveau (enseignement programmé ramifié). 
+            Du gehst in kleinen Schritten vor. Nach jeder Antwort bekommst du sofort Rückmeldung.
+            Bei einem Fehler gibt es einen kurzen Hilfeschritt (verzweigtes programmiertes Lernen).
           </p>
           <div class="actions-row">
             <div class="actions-left">
               <button class="btn-primary" onclick="goToStep('step-pretest')">
-                Commencer le parcours
+                Parcours starten
               </button>
             </div>
             <div class="actions-right">
-              <span class="hint">Tu peux faire une pause entre deux étapes si besoin.</span>
+              <span class="hint">Zwischen zwei Schritten kannst du jederzeit pausieren.</span>
             </div>
           </div>
         </section>
 
-        <!-- Etape 1 : pré-test concept de pression -->
+        <!-- Schritt 1: Diagnose -->
         <section class="step" id="step-pretest" data-index="1">
-          <div class="step-tag">Étape 1 · Diagnostic</div>
-          <h2 class="step-title">Pression ou force&nbsp;?</h2>
+          <div class="step-tag">Schritt 1 · Diagnose</div>
+          <h2 class="step-title">Druck oder Kraft?</h2>
           <div class="reading-box">
-            Ouvre ton support, section <strong>« Druck »</strong> (définition de la pression) et lis le
-            premier paragraphe qui illustre $p = \dfrac{F}{A}$. Note la formule sur ton brouillon
-            puis valide la lecture ci-dessous.
+            Öffne dein Skript, Abschnitt <strong>« Druck »</strong> (Definition) und lies den ersten Absatz,
+            der $p = \dfrac{F}{A}$ erläutert. Notiere die Formel auf deinem Schmierblatt und
+            bestätige die Lektüre unten.
           </div>
           <div class="reading-guard" data-step-guard="step-pretest">
-            <div>Confirmes-tu avoir lu la section « Druck » avant de répondre&nbsp;?</div>
+            <div>Hast du den Abschnitt « Druck » gelesen, bevor du antwortest?</div>
             <button class="btn-primary" onclick="unlockStep('step-pretest')">
-              J’ai lu la section → débloquer la question
+              Abschnitt gelesen → Frage freischalten
             </button>
           </div>
 
           <div class="lockable" data-step-lock="step-pretest">
             <p class="question">
-              On pose un bloc de $100\,\text{N}$ sur<br />
-              (A) une table de surface $1.0\,\text{m}^2$<br />
-              (B) la même table mais sur une planchette de $0.10\,\text{m}^2$.<br /><br />
-              Dans quel cas la <strong>pression</strong> sur la table est-elle la plus grande&nbsp;?
+              Ein Block von $100\,\text{N}$ liegt auf<br />
+              (A) einem Tisch mit Fläche $1{,}0\,\text{m}^2$<br />
+              (B) demselben Tisch, aber auf einer Platte mit $0{,}10\,\text{m}^2$.<br /><br />
+              In welchem Fall ist der <strong>Druck</strong> auf den Tisch größer?
             </p>
             <div class="options">
               <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
-                Dans le cas (A), car la force est la même.
+                In Fall (A), weil die Kraft gleich bleibt.
               </button>
               <button class="option-btn" data-correct="true" onclick="handleMCQ(this, 'pretest', true)">
-                Dans le cas (B), car la même force agit sur une plus petite surface.
+                In Fall (B), weil die gleiche Kraft auf eine kleinere Fläche wirkt.
               </button>
               <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
-                La pression est identique dans (A) et (B).
+                Der Druck ist in (A) und (B) identisch.
               </button>
             </div>
             <div id="feedback-pretest" class="feedback"></div>
@@ -642,126 +674,119 @@
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-intro')">← Retour</button>
+              <button class="btn-secondary" onclick="goToStep('step-intro')">← Zurück</button>
             </div>
             <div class="actions-right">
               <span class="hint">
-                Si tu te trompes, tu iras vers une courte explication avant de continuer.
+                Bei einem Fehler folgt eine kurze Erklärung, bevor es weitergeht.
               </span>
             </div>
           </div>
         </section>
 
-        <!-- Etape 1b : remédiation pression -->
+        <!-- Schritt 1b: Remedial Druck -->
         <section class="step" id="step-remediation-pression" data-index="1">
-          <div class="step-tag">Étape 1 bis · Aide ciblée</div>
-          <h2 class="step-title">Revoir la définition de la pression</h2>
+          <div class="step-tag">Schritt 1 bis · Gezielte Hilfe</div>
+          <h2 class="step-title">Definition von Druck wiederholen</h2>
           <div class="reading-box">
-            <strong>À lire dans le support</strong><br />
-            1. Cherche la section <strong>« Druck »</strong> (p. 8) et lis le premier paragraphe, où le
-            texte définit la pression comme rapport entre force et surface (avec l’exemple des
-            ballons / pneus). <br />
-            2. Note sur ton brouillon la définition suivante en français&nbsp;:
-            <br />
-            <em>« La pression est la force perpendiculaire exercée par unité de surface. »</em>
+            <strong>Im Skript nachlesen</strong><br />
+            1. Finde den Abschnitt <strong>« Druck »</strong> (S. 8) und lies den ersten Absatz, der den Druck als Verhältnis von Kraft und Fläche beschreibt (Beispiel Ballon / Reifen).<br />
+            2. Notiere auf deinem Schmierblatt die Definition auf Deutsch:<br />
+            <em>« Druck ist die senkrechte Kraft pro Flächeneinheit. »</em>
           </div>
           <div class="formula-box">
-            <div class="label">Formule à retenir (écris-la toi-même)</div>
+            <div class="label">Merkformel (selbst aufschreiben)</div>
             <div class="math">
               $p = \dfrac{F}{A}$
             </div>
             <div class="explain">
-              $p$ en Pascal (Pa), $F$ en Newton (N), $A$ en m$^2$.
+              $p$ in Pascal (Pa), $F$ in Newton (N), $A$ in m$^2$.
             </div>
           </div>
           <p class="step-instruction">
-            Réfléchis à nouveau à la table : si l’aire $A$ devient plus petite mais que la force $F$
-            est la même, que devient le rapport $F/A$&nbsp;?
+            Denk noch einmal an den Tisch: Wenn die Fläche $A$ kleiner wird, die Kraft $F$ aber gleich bleibt – was passiert mit dem Quotienten $F/A$?
           </p>
           <div class="actions-row">
             <div class="actions-left">
               <button class="btn-primary" onclick="goToStep('step-pretest')">
-                Refaire la question de diagnostic
+                Diagnosefrage erneut lösen
               </button>
             </div>
             <div class="actions-right">
-              <span class="hint">Si tu réponds juste, tu passeras à l’étape suivante.</span>
+              <span class="hint">Bei richtiger Antwort geht es weiter.</span>
         </div>
       </div>
     </section>
 
-        <!-- Etape 1c : remédiation unités -->
+        <!-- Schritt 1c: Remedial Einheiten -->
         <section class="step" id="step-remediation-unites" data-index="2">
-          <div class="step-tag">Étape 2 bis · Aide ciblée</div>
-          <h2 class="step-title">Revoir les unités de pression</h2>
+          <div class="step-tag">Schritt 2 bis · Gezielte Hilfe</div>
+          <h2 class="step-title">Druckeinheiten wiederholen</h2>
           <div class="reading-box">
-            <strong>À retenir</strong><br />
-            $1\,\text{bar} = 1.0 \times 10^5\,\text{Pa}$<br />
-            $1\,\text{atm} \approx 1.013 \times 10^5\,\text{Pa}$<br />
-            $760\,\text{mmHg} \approx 1\,\text{atm} \approx 1.0\,\text{bar}$<br />
-            $1\,\text{mmHg} \approx 133.3\,\text{Pa}$
+            <strong>Zu behalten</strong><br />
+            $1\,\text{bar} = 1{,}0 \times 10^5\,\text{Pa}$<br />
+            $1\,\text{atm} \approx 1{,}013 \times 10^5\,\text{Pa}$<br />
+            $760\,\text{mmHg} \approx 1\,\text{atm} \approx 1{,}0\,\text{bar}$<br />
+            $1\,\text{mmHg} \approx 133{,}3\,\text{Pa}$
           </div>
           <p class="step-instruction">
-            Convertis toujours en Pascal ou en bar pour comparer. Exemple : $1.0\,\text{bar} = 100{\,}000\,\text{Pa}$.
+            Rechne zum Vergleichen immer in Pascal oder bar um. Beispiel: $1{,}0\,\text{bar} = 100{\,}000\,\text{Pa}$.
           </p>
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-primary" onclick="goToStep('step-unites')">Refaire la question</button>
+              <button class="btn-primary" onclick="goToStep('step-unites')">Frage erneut lösen</button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 2 : unités de pression -->
+        <!-- Schritt 2: Einheiten -->
         <section class="step" id="step-unites" data-index="2">
-          <div class="step-tag">Étape 2 · Unités de pression</div>
-          <h2 class="step-title">Pascal, bar et mmHg</h2>
+          <div class="step-tag">Schritt 2 · Druckeinheiten</div>
+          <h2 class="step-title">Pascal, bar und mmHg</h2>
           <div class="reading-box">
-            <strong>Lecture guidée</strong><br />
-            Relis dans le support la partie où les unités de pression sont introduites
-            (<strong>« Definition » et tableau des unités</strong>, section <em>Druck</em>). Note sur ton
-            brouillon&nbsp;:
+            <strong>Geführte Lektüre</strong><br />
+            Lies im Skript den Teil, in dem die Druckeinheiten eingeführt werden
+            (<strong>« Definition » und Tabelle der Einheiten</strong>, Abschnitt <em>Druck</em>). Notiere auf deinem Schmierblatt:
             <br />• $1\,\text{Pa} = 1\,\text{N}/\text{m}^2$<br />
             • $1\,\text{bar} = 10^5\,\text{Pa}$<br />
-            • $1\,\text{mmHg} \approx 133.3\,\text{Pa}$ (colonne de mercure). 
+            • $1\,\text{mmHg} \approx 133{,}3\,\text{Pa}$ (Quecksilbersäule).
           </div>
 
           <div class="reading-guard" data-step-guard="step-unites">
-            <div>Lis ces lignes dans le support (« Definition » + tableau des unités) puis valide pour accéder aux questions.</div>
+            <div>Lies diese Zeilen im Skript (Definition + Einheitentabelle) und bestätige, um die Fragen freizuschalten.</div>
             <button class="btn-primary" onclick="unlockStep('step-unites')">
-              J’ai lu la section → débloquer les questions
+              Abschnitt gelesen → Fragen freischalten
             </button>
           </div>
 
           <div class="lockable" data-step-lock="step-unites">
             <p class="question">
-              1. La pression atmosphérique vaut environ $1.0\,\text{bar}$. Quelle est la meilleure
-              approximation en Pascal&nbsp;?
+              1. Der atmosphärische Druck beträgt etwa $1{,}0\,\text{bar}$. Welche Angabe in Pascal passt am besten?
             </p>
             <div class="options">
               <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
-                $1.0\,\text{Pa}$
+                $1{,}0\,\text{Pa}$
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'unites1', true)">
-                $1.0 \times 10^5\,\text{Pa}$
+                $1{,}0 \times 10^5\,\text{Pa}$
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
-                $1.0 \times 10^3\,\text{Pa}$
+                $1{,}0 \times 10^3\,\text{Pa}$
               </button>
             </div>
 
             <p class="question">
-              2. On lit sur un baromètre $760\,\text{mmHg}$. À quoi cela correspond-il le plus
-              probablement&nbsp;?
+              2. Auf einem Barometer liest du $760\,\text{mmHg}$. Wozu entspricht das am ehesten?
             </p>
             <div class="options">
               <button class="option-btn" onclick="handleMCQ(this, 'unites2', true)">
-                À peu près à la pression atmosphérique normale.
+                Etwa dem normalen atmosphärischen Druck.
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
-                À un vide presque parfait.
+                Beinahe einem perfekten Vakuum.
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
-                À $760\,\text{Pa}$, donc beaucoup moins que $1\,\text{bar}$.
+                $760\,\text{Pa}$, also viel weniger als $1\,\text{bar}$.
               </button>
             </div>
 
@@ -770,67 +795,63 @@
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-pretest')">← Étape précédente</button>
+              <button class="btn-secondary" onclick="goToStep('step-pretest')">← Vorheriger Schritt</button>
             </div>
             <div class="actions-right">
               <button class="btn-primary" onclick="goToStep('step-hydrostatique')">
-                Étape suivante: pression dans un liquide →
+                Nächster Schritt: Druck in einer Flüssigkeit →
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 3 : dérivation p = p0 + rho g h -->
+        <!-- Schritt 3: p = p0 + rho g h -->
         <section class="step" id="step-hydrostatique" data-index="3">
-          <div class="step-tag">Étape 3 · Pression hydrostatique</div>
-          <h2 class="step-title">D’où vient $p = p_0 + \rho g h$&nbsp;?</h2>
+          <div class="step-tag">Schritt 3 · Hydrostatik</div>
+          <h2 class="step-title">Woher kommt $p = p_0 + \rho g h$?</h2>
 
           <div class="reading-box">
-            <strong>À faire au calme</strong><br />
-            1. Dans le support, lis attentivement la section
-            <strong>« Druck in einer ruhenden Flüssigkeit »</strong> (la colonne de liquide avec densité
-            $\rho$, hauteur $h$ et section $S$). <br />
-            2. Reproduis sur ton brouillon le schéma de la colonne (surface du haut à pression
-            $p_0$, surface du bas à pression $p$). Écris toutes les forces qui agissent sur la
-            colonne.
+            <strong>In Ruhe lesen</strong><br />
+            1. Lies im Skript den Abschnitt
+            <strong>« Druck in einer ruhenden Flüssigkeit »</strong> (Flüssigkeitssäule mit Dichte
+            $\rho$, Höhe $h$ und Querschnitt $S$).<br />
+            2. Zeichne in dein Heft die Säule (oben Druck $p_0$, unten Druck $p$). Beschrifte alle Kräfte auf die Säule.
           </div>
 
           <div class="formula-box">
-            <div class="label">Dérivation à connaître (résumé)</div>
+            <div class="label">Herleitung (Kurzfassung)</div>
             <div class="math">
-              Poids de la colonne : $F = mg = \rho V g = \rho S h g$<br />
-              Pression due à la colonne : $p_{\text{colonne}} = \dfrac{F}{S} = \rho g h$<br />
-              Pression totale en bas : $p = p_0 + \rho g h$
+              Gewicht der Säule: $F = mg = \rho V g = \rho S h g$<br />
+              Druck der Säule: $p_{\text{Säule}} = \dfrac{F}{S} = \rho g h$<br />
+              Gesamtdruck unten: $p = p_0 + \rho g h$
             </div>
             <div class="explain">
-              $p_0$ : pression à la surface (souvent pression atmosphérique), $h$ : profondeur
-              sous cette surface.
+              $p_0$: Druck an der Oberfläche (oft Atmosphärendruck), $h$: Tiefe unter der Oberfläche.
             </div>
           </div>
 
           <div class="reading-guard" data-step-guard="step-hydrostatique">
-            <div>Valide que tu as lu « Druck in einer ruhenden Flüssigkeit » et reproduit le schéma avant de répondre.</div>
+            <div>Bestätige, dass du « Druck in einer ruhenden Flüssigkeit » gelesen und die Skizze übernommen hast.</div>
             <button class="btn-primary" onclick="unlockStep('step-hydrostatique')">
-              J’ai lu / recopié le schéma → débloquer
+              Gelesen / skizziert → freischalten
             </button>
           </div>
 
           <div class="lockable" data-step-lock="step-hydrostatique">
             <p class="question">
-              On est dans un lac d’eau ($\rho \approx 1000\,\text{kg/m}^3$). On plonge à $h = 5.0\,\text{m}$
-              sous la surface. En négligeant la petite différence entre $1.013$ et $1.0$, la pression
-              totale en profondeur est la plus proche de&nbsp;:
+              Wir sind in einem Süßwassersee ($\rho \approx 1000\,\text{kg/m}^3$). Wir tauchen auf $h = 5{,}0\,\text{m}$
+              unter die Oberfläche. Die Gesamtdrucktiefe ist näher bei … (die kleine Differenz zwischen $1{,}013$ und $1{,}0$ vernachlässigen).
             </p>
 
             <div class="options">
               <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
-                $p \approx 5.0 \times 10^4\,\text{Pa}$ (seule la colonne d’eau compte).
+                $p \approx 5{,}0 \times 10^4\,\text{Pa}$ (nur die Wassersäule zählt).
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'hydro1', true)">
-                $p \approx 1.5 \times 10^5\,\text{Pa}$ (pression atmosphérique + eau).
+                $p \approx 1{,}5 \times 10^5\,\text{Pa}$ (Atmosphäre + Wasser).
               </button>
               <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
-                $p \approx 1.0 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
+                $p \approx 1{,}0 \times 10^5\,\text{Pa}$ (gleich wie an der Oberfläche).
               </button>
             </div>
 
@@ -839,74 +860,73 @@
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-unites')">← Étape précédente</button>
+              <button class="btn-secondary" onclick="goToStep('step-unites')">← Vorheriger Schritt</button>
             </div>
             <div class="actions-right">
               <button class="btn-primary" onclick="goToStep('step-torricelli')">
-                Étape suivante: colonne de Hg →
+                Nächster Schritt: Quecksilbersäule →
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 3 bis : remédiation hydrostatique -->
+        <!-- Schritt 3b: Remedial Hydro -->
         <section class="step" id="step-remediation-hydro" data-index="3">
-          <div class="step-tag">Étape 3 bis · Aide ciblée</div>
-          <h2 class="step-title">Additionner p0 et la colonne</h2>
+          <div class="step-tag">Schritt 3 bis · Gezielte Hilfe</div>
+          <h2 class="step-title">p0 und die Flüssigkeitssäule addieren</h2>
           <div class="reading-box">
-            <strong>Rappel</strong><br />
+            <strong>Erinnerung</strong><br />
             $p = p_0 + \rho g h$<br />
-            $p_0$ : pression à la surface (souvent $1.0\,\text{bar}$).<br />
-            $\rho g h$ : pression ajoutée par la colonne de liquide (en Pa).
+            $p_0$: Druck an der Oberfläche (oft $1{,}0\,\text{bar}$).<br />
+            $\rho g h$: Zusatzdruck durch die Säule (in Pa).
           </div>
           <p class="step-instruction">
-            Calcule toujours $\rho g h$ puis ajoute $p_0$. Pour l’eau : $1000 \times 9.81 \times h$ donne des Pascals.
+            Berechne immer zuerst $\rho g h$ und addiere dann $p_0$. Für Wasser: $1000 \times 9{,}81 \times h$ ergibt Pascal.
           </p>
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-primary" onclick="goToStep('step-hydrostatique')">Refaire la question</button>
+              <button class="btn-primary" onclick="goToStep('step-hydrostatique')">Frage erneut lösen</button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 4 : mmHg & Torricelli -->
+        <!-- Schritt 4: Torricelli -->
         <section class="step" id="step-torricelli" data-index="4">
-          <div class="step-tag">Étape 4 · Colonne de mercure</div>
-          <h2 class="step-title">Torricelli et les $\text{mmHg}$</h2>
+          <div class="step-tag">Schritt 4 · Quecksilbersäule</div>
+          <h2 class="step-title">Torricelli und die $\text{mmHg}$</h2>
 
           <div class="reading-box">
-            <strong>Lecture ciblée</strong><br />
-            Dans le support, trouve le paragraphe sur le <strong>baromètre de Torricelli</strong> (tube
-            rempli de mercure renversé dans un réservoir). Observe bien&nbsp;:
+            <strong>Gezielte Lektüre</strong><br />
+            Suche im Skript den Absatz über das <strong>Torricelli-Barometer</strong> (Quecksilberrohr, das in ein Gefäß getaucht wird). Achte auf:
             <br />
-            • la hauteur $h$ de mercure dans le tube,<br />
-            • le vide au-dessus du mercure,<br />
-            • la pression atmosphérique qui agit sur le réservoir. 
+            • die Höhe $h$ der Quecksilbersäule,<br />
+            • das Vakuum über dem Quecksilber,<br />
+            • den Atmosphärendruck auf das Gefäß.
           </div>
 
           <p class="step-instruction">
-            On admet ici que la masse volumique du mercure vaut<br />
-            $\rho_{\text{Hg}} = 13.6 \times 10^3\,\text{kg/m}^3$ et que $g = 9.81\,\text{m/s}^2$.
+            Wir nehmen die Dichte des Quecksilbers als<br />
+            $\rho_{\text{Hg}} = 13{,}6 \times 10^3\,\text{kg/m}^3$ und $g = 9{,}81\,\text{m/s}^2$.
           </p>
 
           <div class="reading-guard" data-step-guard="step-torricelli">
-            <div>Lis le paragraphe sur le baromètre de Torricelli et observe le schéma avant de faire le calcul.</div>
+            <div>Lies den Absatz zum Torricelli-Barometer und sieh dir die Skizze an, bevor du rechnest.</div>
             <button class="btn-primary" onclick="unlockStep('step-torricelli')">
-              J’ai lu / observé → débloquer le calcul
+              Gelesen / betrachtet → Rechnung freischalten
             </button>
           </div>
 
           <div class="lockable" data-step-lock="step-torricelli">
             <p class="question">
-              Utilise la formule $p = \rho g h$ pour retrouver la hauteur de mercure qui correspond à
-              $p_0 = 1.01 \times 10^5\,\text{Pa}$. Donne ta réponse en mm.<br /><br />
-              (Indice&nbsp;: isole $h$ puis calcule numériquement.)
+              Nutze $p = \rho g h$, um die Quecksilberhöhe zu finden, die zu
+              $p_0 = 1{,}01 \times 10^5\,\text{Pa}$ gehört. Gib deine Antwort in mm an.<br /><br />
+              (Tipp: Stelle $h$ frei und rechne aus.)
             </p>
 
             <div class="numeric-input-row">
-              <input type="number" id="input-hg" placeholder="hauteur en mm" />
+              <input type="number" id="input-hg" placeholder="Höhe in mm" />
               <button class="btn-primary" onclick="checkNumeric('hg', 760, 40)">
-                Vérifier
+                Prüfen
               </button>
             </div>
             <div id="feedback-hg" class="feedback"></div>
@@ -914,76 +934,74 @@
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-hydrostatique')">← Étape précédente</button>
+              <button class="btn-secondary" onclick="goToStep('step-hydrostatique')">← Vorheriger Schritt</button>
             </div>
             <div class="actions-right">
               <button class="btn-primary" onclick="goToStep('step-exo-hydro')">
-                Étape suivante: exercices d’application →
+                Nächster Schritt: Übungsaufgaben →
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 4 bis : remédiation Hg -->
+        <!-- Schritt 4b: Remedial Hg -->
         <section class="step" id="step-remediation-hg" data-index="4">
-          <div class="step-tag">Étape 4 bis · Aide ciblée</div>
-          <h2 class="step-title">Hauteur de mercure et pression</h2>
+          <div class="step-tag">Schritt 4 bis · Gezielte Hilfe</div>
+          <h2 class="step-title">Quecksilberhöhe und Druck</h2>
           <div class="reading-box">
-            <strong>Formule</strong><br />
+            <strong>Formel</strong><br />
             $p = \rho g h \quad \Rightarrow \quad h = \dfrac{p}{\rho g}$<br />
-            Pour $p \approx 1.0 \times 10^5\,\text{Pa}$, $\rho_{\text{Hg}} = 13.6 \times 10^3\,\text{kg/m}^3$, $g = 9.81$ :
-            $h \approx 0.76\,\text{m} = 760\,\text{mm}$.
+            Für $p \approx 1{,}0 \times 10^5\,\text{Pa}$, $\rho_{\text{Hg}} = 13{,}6 \times 10^3\,\text{kg/m}^3$, $g = 9{,}81$:
+            $h \approx 0{,}76\,\text{m} = 760\,\text{mm}$.
           </div>
           <p class="step-instruction">
-            Si ton résultat est loin de 760 mm, vérifie les unités (m ↔ mm) et les puissances de 10.
+            Wenn dein Ergebnis weit von 760 mm abweicht, prüfe die Einheiten (m ↔ mm) und die Zehnerpotenzen.
           </p>
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-primary" onclick="goToStep('step-torricelli')">Refaire la question</button>
+              <button class="btn-primary" onclick="goToStep('step-torricelli')">Frage erneut lösen</button>
             </div>
           </div>
         </section>
 
-        <!-- Etape 5 : exercices d'hydrostatique simples -->
+        <!-- Schritt 5: einfache Hydro-Übungen -->
         <section class="step" id="step-exo-hydro" data-index="5">
-          <div class="step-tag">Étape 5 · Applications</div>
-          <h2 class="step-title">Petits exercices d’hydrostatique</h2>
+          <div class="step-tag">Schritt 5 · Anwendungen</div>
+          <h2 class="step-title">Kleine Hydrostatik-Übungen</h2>
 
           <p class="step-instruction">
-            Pour chaque question, fais un croquis, écris la formule $p = p_0 + \rho g h$ et les
-            données, puis calcule. Tu peux arrondir les résultats raisonnablement.
+            Für jede Frage: Skizze machen, Formel $p = p_0 + \rho g h$ und Daten aufschreiben, dann rechnen. Du darfst vernünftig runden.
           </p>
 
           <div class="reading-guard" data-step-guard="step-exo-hydro">
-            <div>Relis les exemples d’application de $p = p_0 + \rho g h$ dans le support avant de faire ces deux calculs.</div>
+            <div>Lies im Skript die Beispielrechnungen zu $p = p_0 + \rho g h$, bevor du diese zwei Aufgaben machst.</div>
             <button class="btn-primary" onclick="unlockStep('step-exo-hydro')">
-              J’ai lu les exemples → débloquer les exercices
+              Beispiele gelesen → Aufgaben freischalten
             </button>
           </div>
 
           <div class="lockable" data-step-lock="step-exo-hydro">
             <p class="question">
-              1. À quelle profondeur sous la surface de l’eau la pression totale atteint-elle environ
-              $3.0\,\text{bar}$ (en prenant $p_0 \approx 1.0\,\text{bar}$)&nbsp;?<br />
-              Donne ta réponse en mètres (approximation).
+              1. In welcher Tiefe unter der Wasseroberfläche erreicht der Gesamtdruck etwa
+              $3{,}0\,\text{bar}$ (mit $p_0 \approx 1{,}0\,\text{bar}$)?<br />
+              Gib deine Antwort in Metern (grobe Abschätzung).
             </p>
 
             <div class="numeric-input-row">
-              <input type="number" id="input-3bar" placeholder="profondeur en m" />
+              <input type="number" id="input-3bar" placeholder="Tiefe in m" />
               <button class="btn-primary" onclick="checkNumeric('3bar', 20, 5)">
-                Vérifier
+                Prüfen
               </button>
             </div>
 
             <p class="question">
-              2. On veut un manomètre à eau qui mesure la pression atmosphérique comme une hauteur
-              d’eau équivalente à $1.0\,\text{atm}$. À peu près quelle hauteur d’eau faut-il, en mètres&nbsp;?
+              2. Ein Wasser-Manometer soll den Atmosphärendruck als entsprechende Wasserhöhe für $1{,}0\,\text{atm}$ anzeigen. Wie hoch müsste die Wassersäule ungefähr sein (in m)?
             </p>
 
             <div class="numeric-input-row">
-              <input type="number" id="input-watercol" placeholder="hauteur en m" />
+              <input type="number" id="input-watercol" placeholder="Höhe in m" />
               <button class="btn-primary" onclick="checkNumeric('watercol', 10, 2)">
-                Vérifier
+                Prüfen
               </button>
             </div>
 
@@ -992,71 +1010,69 @@
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-torricelli')">← Étape précédente</button>
+              <button class="btn-secondary" onclick="goToStep('step-torricelli')">← Vorheriger Schritt</button>
             </div>
         <div class="actions-right">
           <button class="btn-primary" onclick="goToStep('step-exo-avance')">
-            Étape suivante: mise en situation →
+            Nächster Schritt: Anwendungssituationen →
           </button>
         </div>
       </div>
     </section>
-    <!-- Etape 5 bis : remédiation exercices simples -->
+    <!-- Schritt 5b: Remedial Übungen -->
     <section class="step" id="step-remediation-exo" data-index="5">
-      <div class="step-tag">Étape 5 bis · Aide ciblée</div>
-      <h2 class="step-title">Relire p = p0 + ρgh pour l’eau</h2>
+      <div class="step-tag">Schritt 5 bis · Gezielte Hilfe</div>
+      <h2 class="step-title">p = p0 + ρgh für Wasser wiederholen</h2>
       <div class="reading-box">
-        <strong>Ordres de grandeur</strong><br />
-        Dans l’eau : $\rho \approx 1000\,\text{kg/m}^3$, donc $ \rho g h \approx 10^4 \times h$ en Pa.<br />
-        $2.0\,\text{bar}$ de plus ≈ $2 \times 10^5\,\text{Pa}$ ⇒ profondeur ≈ $20\,\text{m}$.
+        <strong>Größenordnungen</strong><br />
+        In Wasser: $\rho \approx 1000\,\text{kg/m}^3$, also $ \rho g h \approx 10^4 \times h$ in Pa.<br />
+        $2{,}0\,\text{bar}$ zusätzlich ≈ $2 \times 10^5\,\text{Pa}$ ⇒ Tiefe ≈ $20\,\text{m}$.
       </div>
       <p class="step-instruction">
-        Calcule d’abord la surpression ($p - p_0$) puis divise par $\rho g$ pour trouver $h$.
+        Berechne zuerst die Überdruckkomponente ($p - p_0$) und teile dann durch $\rho g$, um $h$ zu finden.
       </p>
       <div class="actions-row">
         <div class="actions-left">
-          <button class="btn-primary" onclick="goToStep('step-exo-hydro')">Refaire les exercices</button>
+          <button class="btn-primary" onclick="goToStep('step-exo-hydro')">Übungen erneut lösen</button>
         </div>
       </div>
     </section>
 
-    <!-- Etape 6 : exercices d'application avancés -->
+    <!-- Schritt 6: Fortgeschrittene Anwendungen -->
     <section class="step" id="step-exo-avance" data-index="6">
-        <div class="step-tag">Étape 6 · Mise en situation</div>
-        <h2 class="step-title">Vérifie ta maîtrise</h2>
+        <div class="step-tag">Schritt 6 · Anwendungssituationen</div>
+        <h2 class="step-title">Prüfe dein Können</h2>
 
         <p class="step-instruction">
-          Deux situations pour combiner unités et pression hydrostatique. Utilise $p = p_0 + \rho g h$
-          avec $g \approx 9.81\,\text{m/s}^2$ et, sauf mention contraire, $p_0 \approx 1.0\,\text{bar}$.
+          Zwei Situationen, die Einheiten und Hydrostatik kombinieren. Verwende $p = p_0 + \rho g h$
+          mit $g \approx 9{,}81\,\text{m/s}^2$ und, wenn nicht anders angegeben, $p_0 \approx 1{,}0\,\text{bar}$.
         </p>
 
         <div class="reading-guard" data-step-guard="step-exo-avance">
-          <div>Avant de répondre, relis les repères d’unités (bar ↔ Pa ↔ mmHg) et la formule $p = p_0 + \rho g h$ dans le support.</div>
+          <div>Lies vorher die Bezugswerte für Einheiten (bar ↔ Pa ↔ mmHg) und die Formel $p = p_0 + \rho g h$ im Skript.</div>
           <button class="btn-primary" onclick="unlockStep('step-exo-avance')">
-            J’ai relu les repères → débloquer les exercices
+            Bezugswerte gelesen → Aufgaben freischalten
           </button>
         </div>
 
         <div class="lockable" data-step-lock="step-exo-avance">
           <p class="question">
-            1. En plongée (eau de mer, prends $\rho \approx 1025\,\text{kg/m}^3$), à $18.0\,\text{m}$ de profondeur
-            la pression totale vaut environ combien en bar&nbsp;?
+            1. Beim Tauchen (Meerwasser, $\rho \approx 1025\,\text{kg/m}^3$) in $18{,}0\,\text{m}$ Tiefe – wie groß ist der Gesamtdruck in bar ungefähr?
           </p>
           <div class="numeric-input-row">
-            <input type="number" id="input-deepbar" step="0.1" placeholder="pression en bar" />
+            <input type="number" id="input-deepbar" step="0.1" placeholder="Druck in bar" />
             <button class="btn-primary" onclick="checkNumeric('deepbar', 2.8, 0.3)">
-              Vérifier
+              Prüfen
             </button>
           </div>
 
           <p class="question">
-            2. Dans un bassin d’eau douce ($\rho \approx 1000\,\text{kg/m}^3$), à $12.0\,\text{m}$ la pression totale
-            en mmHg est proche de&nbsp;?
+            2. In einem Süßwasserbecken ($\rho \approx 1000\,\text{kg/m}^3$) beträgt der Gesamtdruck bei $12{,}0\,\text{m}$ Tiefe ungefähr wie viel in mmHg?
           </p>
           <div class="numeric-input-row">
-            <input type="number" id="input-mmhgdepth" step="10" placeholder="pression en mmHg" />
+            <input type="number" id="input-mmhgdepth" step="10" placeholder="Druck in mmHg" />
             <button class="btn-primary" onclick="checkNumeric('mmhgdepth', 1630, 150)">
-              Vérifier
+              Prüfen
             </button>
           </div>
 
@@ -1065,120 +1081,130 @@
 
         <div class="actions-row">
           <div class="actions-left">
-            <button class="btn-secondary" onclick="goToStep('step-exo-hydro')">← Étape précédente</button>
+            <button class="btn-secondary" onclick="goToStep('step-exo-hydro')">← Vorheriger Schritt</button>
           </div>
         <div class="actions-right">
           <button class="btn-primary" onclick="goToStep('step-final')">
-            Étape suivante: bilan →
+            Nächster Schritt: Abschluss →
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Etape 6 bis : remédiation avancée -->
+    <!-- Schritt 6b: Remedial Fortgeschritten -->
     <section class="step" id="step-remediation-avance" data-index="6">
-      <div class="step-tag">Étape 6 bis · Aide ciblée</div>
-      <h2 class="step-title">Comparer unités et profondeurs</h2>
+      <div class="step-tag">Schritt 6 bis · Gezielte Hilfe</div>
+      <h2 class="step-title">Einheiten und Tiefen vergleichen</h2>
       <div class="reading-box">
-        <strong>Repères utiles</strong><br />
-        Eau de mer : $\rho \approx 1025\,\text{kg/m}^3$ → $ \rho g h \approx 1.0 \times 10^4 h$ Pa.<br />
-        1 bar ≈ $10^5$ Pa, 1 bar ≈ 760 mmHg. À 10 m d’eau, ajoute environ 1 bar.
+        <strong>Nützliche Anhaltspunkte</strong><br />
+        Meerwasser: $\rho \approx 1025\,\text{kg/m}^3$ → $ \rho g h \approx 1{,}0 \times 10^4 h$ Pa.<br />
+        1 bar ≈ $10^5$ Pa, 1 bar ≈ 760 mmHg. Bei 10 m Wasser kommen etwa 1 bar dazu.
       </div>
       <p class="step-instruction">
-        Convertis d’abord en bar ou Pa, ajoute $p_0$, puis convertis en mmHg si besoin
-        ($p\,\text{[Pa]} / 133.3$ donne des mmHg).
+        Rechne zuerst in bar oder Pa, addiere $p_0$, und wandle bei Bedarf in mmHg um
+        ($p\,\text{[Pa]} / 133{,}3$ ergibt mmHg).
       </p>
       <div class="actions-row">
         <div class="actions-left">
-          <button class="btn-primary" onclick="goToStep('step-exo-avance')">Refaire les exercices avancés</button>
+          <button class="btn-primary" onclick="goToStep('step-exo-avance')">Fortgeschrittene Übungen erneut lösen</button>
         </div>
       </div>
     </section>
 
-    <!-- Étape finale : bilan -->
+    <!-- Schritt 7: Abschluss -->
         <section class="step" id="step-final" data-index="7">
-          <div class="step-tag">Étape 7 · Bilan</div>
-          <h2 class="step-title">Où en es-tu&nbsp;?</h2>
+          <div class="step-tag">Schritt 7 · Abschluss</div>
+          <h2 class="step-title">Wo stehst du?</h2>
 
           <p class="step-instruction">
-            Avant de rendre le support ou de passer à autre chose, vérifie mentalement si tu es
-            capable de faire les actions suivantes <strong>sans regarder</strong> le document&nbsp;:
+            Bevor du das Skript weglegst: Prüfe kurz, ob du die folgenden Punkte <strong>ohne nachzuschlagen</strong> kannst:
           </p>
 
           <ul class="side-list" style="margin-top: 6px; margin-bottom: 8px;">
-            <li>Expliquer la différence entre force et pression, avec un exemple (chaussures / ski).</li>
-            <li>Convertir une pression de bar en Pascal et l’inverse.</li>
-            <li>Dire à quoi correspond physiquement « $1\,\text{mmHg}$ ».</li>
-            <li>Écrire et expliquer la formule $p = p_0 + \rho g h$.</li>
-            <li>Calculer la pression à une certaine profondeur dans l’eau.</li>
+            <li>Den Unterschied zwischen Kraft und Druck mit einem Beispiel erklären (Schuhe / Ski).</li>
+            <li>Druck von bar in Pascal umrechnen und umgekehrt.</li>
+            <li>Erklären, wofür « $1\,\text{mmHg}$ » physikalisch steht.</li>
+            <li>Die Formel $p = p_0 + \rho g h$ schreiben und erläutern.</li>
+            <li>Den Druck in einer bestimmten Wassertiefe berechnen.</li>
           </ul>
 
+          <div class="reading-box">
+            <strong>Letzter Schritt</strong><br />
+            Mache jetzt die zugehörigen Übungen im <em>Arbeitsheft</em> (Skript) und notiere deine Antworten. <br />
+            Wenn du fertig bist, bestätige unten, damit dein Parcours als abgeschlossen gezählt wird (8/8).
+          </div>
+
           <p class="step-instruction">
-            Si tu bloques sur un point, retourne à l’étape correspondante (unités, pression dans un
-            liquide, colonne de mercure) et refais les questions. C’est exactement le principe de
-            l’enseignement programmé&nbsp;: avancer en petites marches, avec rétroaction immédiate. 
+            Wenn etwas nicht sitzt, geh zum entsprechenden Schritt zurück (Einheiten, Druck im Flüssigkeit, Quecksilbersäule) und wiederhole die Fragen. Das ist das Prinzip des programmierten Lernens: kleine Schritte mit sofortigem Feedback.
           </p>
 
           <div class="actions-row">
             <div class="actions-left">
-              <button class="btn-secondary" onclick="goToStep('step-exo-avance')">← Revenir aux exercices</button>
+              <button class="btn-primary" onclick="completeFinalStep()">
+                Arbeitsheft-Aufgaben erledigt → Schritt bestätigen
+              </button>
             </div>
             <div class="actions-right">
-              <span class="hint">Quand tout est OK pour toi, tu as terminé la séquence.</span>
+              <button class="btn-secondary" onclick="goToStep('step-exo-avance')">← Zurück zu den Übungen</button>
             </div>
+          </div>
+          <div class="hint" id="final-confirm-hint" style="margin-top: 6px;">
+            Wenn alles passt: Du hast die Sequenz abgeschlossen.
           </div>
         </section>
       </div>
     </main>
 
-    <!-- Colonne latérale : mémo / aide -->
+    <!-- Seitenleiste: Memo / Hilfe -->
     <aside class="card">
       <div class="side-section">
-        <div class="side-card-title">Formules essentielles</div>
+        <div class="side-card-title">Wesentliche Formeln</div>
         <div class="formula-box" style="margin-bottom: 10px;">
           <div class="math">$p = \dfrac{F}{A}$</div>
-          <div class="explain">Pression comme force par surface.</div>
+          <div class="explain">Druck als Kraft pro Fläche.</div>
         </div>
         <div class="formula-box" style="margin-bottom: 10px;">
           <div class="math">$p = p_0 + \rho g h$</div>
-          <div class="explain">Pression totale dans un liquide en profondeur $h$.</div>
+          <div class="explain">Gesamtdruck in einer Flüssigkeit in Tiefe $h$.</div>
         </div>
         <div class="formula-box">
           <div class="math">
             $1\,\text{bar} = 10^5\,\text{Pa}$<br />
-            $1\,\text{mmHg} \approx 133.3\,\text{Pa}$<br />
-            $1\,\text{atm} \approx 1.013 \times 10^5\,\text{Pa} \approx 760\,\text{mmHg}$
+            $1\,\text{mmHg} \approx 133{,}3\,\text{Pa}$<br />
+            $1\,\text{atm} \approx 1{,}013 \times 10^5\,\text{Pa} \approx 760\,\text{mmHg}$
           </div>
         </div>
       </div>
 
       <div class="side-section">
-        <div class="side-card-title">Stratégie de travail</div>
+        <div class="side-card-title">Arbeitsstrategie</div>
         <ul class="side-list">
-          <li>Lis toujours le paragraphe indiqué dans le support <em>avant</em> de répondre.</li>
-          <li>Note les formules et unités sur ton brouillon.</li>
-          <li>En cas d’erreur, lis la rétroaction et reviens en arrière si nécessaire.</li>
+          <li>Lies immer den angegebenen Absatz im Skript <em>bevor</em> du antwortest.</li>
+          <li>Notiere Formeln und Einheiten auf deinem Schmierblatt.</li>
+          <li>Bei einem Fehler: Rückmeldung lesen und ggf. einen Schritt zurückgehen.</li>
         </ul>
         <div class="side-note">
-          Tu peux utiliser ce panneau comme mémo durant toute la séquence (comme un
-          « fichier d’apprentissage » simplifié). 
+          Dieses Panel kannst du als kleines Memo während der ganzen Sequenz nutzen.
         </div>
       </div>
 
       <div class="side-section">
-        <div class="side-card-title">Avancement</div>
+        <div class="side-card-title">Fortschritt</div>
         <div class="score-box">
           <div class="score-value" id="score-display">0 / 8</div>
           <div class="score-label">
-            Étapes validées (réponse correcte au moins une fois).
+            Bestätigte Schritte (mindestens einmal richtig geantwortet).
           </div>
         </div>
         <p class="side-note">
-          Ce nombre ne sert pas pour une note, uniquement pour t’aider à voir ce que tu as
-          déjà consolidé.
+          Diese Zahl ist keine Note, sondern zeigt dir nur, was du bereits gefestigt hast.
         </p>
       </div>
     </aside>
+  </div>
+
+  <div id="reward-badge" aria-live="polite" aria-label="Belohnungsbild">
+    <img id="reward-img" src="" alt="Niedliches Tier zur Ermutigung" />
   </div>
 
   <script>
@@ -1210,9 +1236,35 @@
       hydro1: "step-hydrostatique"
     };
 
+    const rewardImages = [
+      "images/image1.avif",
+      "images/image2.jpg",
+      "images/image3.jpg",
+      "images/image4.avif",
+      "images/image5.jpg",
+      "images/image6.jpg",
+      "images/image7.webp"
+    ];
+
+    let rewardTimeout = null;
     let validatedSteps = new Set(["step-intro"]);
     let readingUnlocked = {};
     let currentStepId = "step-intro";
+
+    function showReward() {
+      const badge = document.getElementById("reward-badge");
+      const img = document.getElementById("reward-img");
+      if (!badge || !img || rewardImages.length === 0) return;
+      const pick = rewardImages[Math.floor(Math.random() * rewardImages.length)];
+      img.src = pick;
+      badge.classList.add("visible");
+      if (rewardTimeout) {
+        clearTimeout(rewardTimeout);
+      }
+      rewardTimeout = setTimeout(() => {
+        badge.classList.remove("visible");
+      }, 1800);
+    }
 
     function loadState() {
       try {
@@ -1228,7 +1280,7 @@
         readingUnlocked = parsed.readingUnlocked || {};
         currentStepId = parsed.currentStepId || currentStepId;
       } catch (e) {
-        console.warn("Impossible de charger le cache local, on repart de zéro.");
+        console.warn("Fortschritt konnte nicht geladen werden, wir starten neu.");
       }
     }
 
@@ -1241,7 +1293,7 @@
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       } catch (e) {
-        console.warn("Impossible d'enregistrer la progression.", e);
+        console.warn("Fortschritt konnte nicht gespeichert werden.", e);
       }
     }
 
@@ -1264,10 +1316,10 @@
         if (btn) {
           btn.disabled = unlocked;
           btn.textContent = unlocked
-            ? "Lecture validée"
+            ? "Lektüre bestätigt"
             : btn.getAttribute("data-default-label") ||
               btn.textContent ||
-              "Valider la lecture";
+              "Lektüre bestätigen";
         }
       });
     }
@@ -1285,7 +1337,7 @@
 
       document.getElementById("progress-bar").style.width = percent + "%";
       document.getElementById("progress-text").textContent =
-        done + " / " + total + " étapes validées";
+        done + " / " + total + " Schritte bestätigt";
       document.getElementById("score-display").textContent =
         done + " / " + total;
       if (save) {
@@ -1304,13 +1356,12 @@
       if (targetElement) {
         targetElement.classList.add("active");
       }
-      // Si on atteint l'étape finale, on la valide automatiquement.
+      // Finale automatisch validieren
       if (finalId === "step-final") {
         validatedSteps.add("step-final");
       }
       currentStepId = finalId;
       applyLockStates();
-      // Recalculer la progression (au cas où une étape vient d'être validée)
       updateProgress(!options.skipSave);
     }
 
@@ -1327,7 +1378,7 @@
           const fbLocked = document.getElementById(feedbackId);
           if (fbLocked) {
             fbLocked.textContent =
-              "Débloque d’abord en confirmant la lecture de la section indiquée.";
+              "Bitte zuerst die angegebene Stelle lesen und die Lektüre bestätigen.";
             fbLocked.classList.add("ko");
             fbLocked.classList.remove("ok");
           }
@@ -1347,21 +1398,20 @@
         button.classList.add("correct");
         if (feedbackId) {
           const fb = document.getElementById(feedbackId);
-          fb.textContent = "✔ Correct, tu peux passer à l’étape suivante.";
+          fb.textContent = "✔ Richtig, du kannst zum nächsten Schritt gehen.";
           fb.classList.add("ok");
           fb.classList.remove("ko");
         }
 
-        // Valider l'étape correspondante
         if (group === "pretest") {
           validatedSteps.add("step-pretest");
-          // Si bonne réponse directe, on saute l’étape de remédiation
           goToStep("step-unites");
         } else if (group === "unites1" || group === "unites2") {
           validatedSteps.add("step-unites");
         } else if (group === "hydro1") {
           validatedSteps.add("step-hydrostatique");
         }
+        showReward();
       } else {
         button.classList.add("incorrect");
         if (feedbackId) {
@@ -1370,16 +1420,15 @@
           fb.classList.add("ko");
           if (group === "pretest") {
             fb.textContent =
-              "✖ Pas tout à fait. Rappelle-toi que la pression dépend de la surface de contact. Tu vas passer par une courte explication.";
-            // Ramification : aller vers la remédiation
+              "✖ Noch nicht ganz. Druck hängt von der Fläche ab. Du gehst gleich zu einer kurzen Erklärung.";
             setTimeout(() => goToStep("step-remediation-pression"), 900);
           } else if (group === "unites1" || group === "unites2") {
             fb.textContent =
-              "✖ Vérifie les équivalences entre bar, Pa et mmHg dans le support.";
+              "✖ Prüfe im Skript die Umrechnungen zwischen bar, Pa und mmHg.";
             setTimeout(() => goToStep("step-remediation-unites"), 900);
           } else if (group === "hydro1") {
             fb.textContent =
-              "✖ Attention : la pression totale au fond = pression atmosphérique + pression de la colonne d’eau.";
+              "✖ Achtung: Gesamtdruck = Atmosphärendruck + Druck der Wassersäule.";
             setTimeout(() => goToStep("step-remediation-hydro"), 900);
           }
         }
@@ -1420,7 +1469,7 @@
         const fbLocked = document.getElementById(feedbackId);
         if (fbLocked) {
           fbLocked.textContent =
-            "Confirme la lecture de la section demandée pour débloquer ces calculs.";
+            "Bitte zuerst die angegebene Lektüre bestätigen, um diese Aufgaben freizuschalten.";
           fbLocked.classList.add("ko");
           fbLocked.classList.remove("ok");
         }
@@ -1430,7 +1479,7 @@
       const value = parseFloat(document.getElementById(inputId).value);
       const fb = document.getElementById(feedbackId);
       if (isNaN(value)) {
-        fb.textContent = "Entre une valeur numérique (nombre).";
+        fb.textContent = "Gib bitte eine Zahl ein.";
         fb.classList.add("ko");
         fb.classList.remove("ok");
         return;
@@ -1438,13 +1487,14 @@
 
       const diff = Math.abs(value - expected);
       if (diff <= tolerance) {
-        fb.textContent = "✔ Résultat cohérent (tolérance ±" + tolerance + ").";
+        fb.textContent = "✔ Plausibles Ergebnis (Toleranz ±" + tolerance + ").";
         fb.classList.add("ok");
         fb.classList.remove("ko");
         validatedSteps.add(stepId);
+        showReward();
       } else {
         fb.textContent =
-          "✖ Résultat éloigné. Repart de la formule et vérifie tes unités.";
+          "✖ Ergebnis weit entfernt. Gehe von der Formel aus und prüfe deine Einheiten.";
         fb.classList.add("ko");
         fb.classList.remove("ok");
         if (remediationId) {
@@ -1454,9 +1504,18 @@
       updateProgress();
     }
 
+    function completeFinalStep() {
+      validatedSteps.add("step-final");
+      const hint = document.getElementById("final-confirm-hint");
+      if (hint) {
+        hint.textContent = "✔ Schritt bestätigt – du hast 8/8 erreicht.";
+      }
+      showReward();
+      updateProgress();
+    }
+
     function initializeApp() {
       loadState();
-      // Toujours valider l'intro par défaut
       validatedSteps.add("step-intro");
       if (!document.getElementById(currentStepId)) {
         currentStepId = "step-intro";
@@ -1468,7 +1527,6 @@
       updateProgress();
     }
 
-    // Initialisation
     initializeApp();
   </script>
 </body>
