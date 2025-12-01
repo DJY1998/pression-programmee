@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Séquence programmée – Pression</title>
+
+  <!-- Pour le rendu des formules écrites en "markdown" LaTeX : $p = \frac{F}{A}$ -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+  <style>
+    :root {
+      --bg: #050810;
+      --bg-card: #0f172a;
+      --accent: #22d3ee;
+      --accent-soft: rgba(34, 211, 238, 0.18);
+      --danger: #f97373;
+      --success: #4ade80;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+      --radius-xl: 1.25rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(260px, 1.4fr);
+      gap: 24px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 60%);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 22px 24px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left,
+        rgba(34, 211, 238, 0.06),
+        transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 12px;
+    }
+
+    .title-main {
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .objectifs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .objectif-chip {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .objectif-chip span {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .progress-wrapper {
+      margin-bottom: 16px;
+    }
+
+    .progress-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.9);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #4ade80);
+      transition: width 0.35s ease-out;
+    }
+
+    .steps-container {
+      margin-top: 8px;
+      min-height: 260px;
+    }
+
+    .step {
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-tag::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent) 0, transparent 70%);
+      border: 1px solid rgba(34, 211, 238, 0.4);
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-instruction {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .reading-box {
+      border-radius: 0.9rem;
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.65);
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .reading-box strong {
+      color: var(--text);
+    }
+
+    .formula-box {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: radial-gradient(circle at top left,
+        rgba(56, 189, 248, 0.16),
+        rgba(15, 23, 42, 0.9));
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+    }
+
+    .formula-box .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .formula-box .math {
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .formula-box .explain {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .question {
+      margin-top: 6px;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .options {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.16s ease-out;
+    }
+
+    .option-btn:hover {
+      border-color: rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .option-btn.correct {
+      border-color: rgba(74, 222, 128, 0.9);
+      background: rgba(22, 163, 74, 0.18);
+    }
+
+    .option-btn.incorrect {
+      border-color: rgba(248, 113, 113, 0.9);
+      background: rgba(127, 29, 29, 0.2);
+    }
+
+    .feedback {
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+      min-height: 18px;
+    }
+
+    .feedback.ok {
+      color: var(--success);
+    }
+
+    .feedback.ko {
+      color: var(--danger);
+    }
+
+    .numeric-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .numeric-input-row input {
+      flex: 0 0 130px;
+      padding: 6px 8px;
+      border-radius: 0.7rem;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    .numeric-input-row input:focus {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-primary, .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.16s ease-out;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(120deg, var(--accent), #4ade80);
+      color: #0b1120;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 25px rgba(34, 211, 238, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--muted);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(148, 163, 184, 0.9);
+      color: var(--text);
+    }
+
+    .actions-row {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .actions-left, .actions-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Side panel */
+    .side-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .side-section {
+      margin-bottom: 14px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .side-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 6px 0;
+    }
+
+    .side-list li {
+      padding: 3px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .side-list li::before {
+      content: "•";
+      color: var(--accent);
+      margin-top: 1px;
+    }
+
+    .badge-small {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      margin-left: 4px;
+      color: var(--muted);
+    }
+
+    .side-note {
+      border-radius: 0.9rem;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.8);
+      padding: 8px 9px;
+      font-size: 0.78rem;
+      margin-top: 6px;
+    }
+
+    .score-box {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      background: var(--accent-soft);
+      padding: 8px 9px;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+
+    .score-value {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Colonne principale : séquence programmée -->
+    <main class="card">
+      <div class="header">
+        <div>
+          <div class="title-main">Pression – Parcours guidé</div>
+          <p class="subtitle">
+            Travaille à ton rythme. Lis les consignes, consulte le support de cours,
+            réponds aux questions. Si ta réponse est juste, tu avances. Sinon, tu passes
+            par une étape d’aide avant de continuer.
+          </p>
+        </div>
+        <div class="pill">Enseignement programmé</div>
+      </div>
+
+      <div class="objectifs">
+        <div class="objectif-chip">
+          <span></span> Pression comme $p = \dfrac{F}{A}$
+        </div>
+        <div class="objectif-chip">
+          <span></span> Unités: Pa, bar, mmHg
+        </div>
+        <div class="objectif-chip">
+          <span></span> Loi hydrostatique $p = p_0 + \rho g h$
+        </div>
+        <div class="objectif-chip">
+          <span></span> Applications simples (eau, Hg)
+        </div>
+      </div>
+
+      <div class="progress-wrapper">
+      <div class="progress-label-row">
+        <div>Progression</div>
+        <div id="progress-text">0 / 8 étapes validées</div>
+      </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="steps-container">
+        <!-- Étape 0 : accueil / explication -->
+        <section class="step active" id="step-intro" data-index="0">
+          <div class="step-tag">Point de départ</div>
+          <h2 class="step-title">Comment fonctionne ce parcours&nbsp;?</h2>
+          <p class="step-instruction">
+            Tu sors de 4h de dissertation – ici, l’objectif est de travailler de manière
+            autonome et calme. Tu peux revenir en arrière à tout moment.
+          </p>
+          <div class="reading-box">
+            <strong>Matériel nécessaire</strong><br />
+            • Support de cours <em>« Temperatur – Wärme »</em>, sections <strong>Druck</strong> et
+            <strong>Druck in einer ruhenden Flüssigkeit</strong> (partie sur le baromètre de Torricelli). <br />
+            • Ta calculatrice.<br />
+            • De quoi noter (brouillon).
+          </div>
+          <p class="step-instruction">
+            Tu vas avancer par petites étapes. Après chaque question, tu reçois une
+            rétroaction immédiate. En cas d’erreur, tu passes par une mini-explication
+            avant d’essayer à nouveau (enseignement programmé ramifié). 
+          </p>
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-primary" onclick="goToStep('step-pretest')">
+                Commencer le parcours
+              </button>
+            </div>
+            <div class="actions-right">
+              <span class="hint">Tu peux faire une pause entre deux étapes si besoin.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 1 : pré-test concept de pression -->
+        <section class="step" id="step-pretest" data-index="1">
+          <div class="step-tag">Étape 1 · Diagnostic</div>
+          <h2 class="step-title">Pression ou force&nbsp;?</h2>
+          <div class="reading-box">
+            Sans lire encore le support, réponds à la question suivante. Cela sert à savoir
+            si tu peux sauter une partie de l’explication.
+          </div>
+          <p class="question">
+            On pose un bloc de $100\,\text{N}$ sur<br />
+            (A) une table de surface $1.0\,\text{m}^2$<br />
+            (B) la même table mais sur une planchette de $0.10\,\text{m}^2$.<br /><br />
+            Dans quel cas la <strong>pression</strong> sur la table est-elle la plus grande&nbsp;?
+          </p>
+          <div class="options">
+            <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
+              Dans le cas (A), car la force est la même.
+            </button>
+            <button class="option-btn" data-correct="true" onclick="handleMCQ(this, 'pretest', true)">
+              Dans le cas (B), car la même force agit sur une plus petite surface.
+            </button>
+            <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
+              La pression est identique dans (A) et (B).
+            </button>
+          </div>
+          <div id="feedback-pretest" class="feedback"></div>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-intro')">← Retour</button>
+            </div>
+            <div class="actions-right">
+              <span class="hint">
+                Si tu te trompes, tu iras vers une courte explication avant de continuer.
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 1b : remédiation pression -->
+        <section class="step" id="step-remediation-pression" data-index="1">
+          <div class="step-tag">Étape 1 bis · Aide ciblée</div>
+          <h2 class="step-title">Revoir la définition de la pression</h2>
+          <div class="reading-box">
+            <strong>À lire dans le support</strong><br />
+            1. Cherche la section <strong>« Druck »</strong> (p. 8) et lis le premier paragraphe, où le
+            texte définit la pression comme rapport entre force et surface (avec l’exemple des
+            ballons / pneus). <br />
+            2. Note sur ton brouillon la définition suivante en français&nbsp;:
+            <br />
+            <em>« La pression est la force perpendiculaire exercée par unité de surface. »</em>
+          </div>
+          <div class="formula-box">
+            <div class="label">Formule à retenir (écris-la toi-même)</div>
+            <div class="math">
+              $p = \dfrac{F}{A}$
+            </div>
+            <div class="explain">
+              $p$ en Pascal (Pa), $F$ en Newton (N), $A$ en m$^2$.
+            </div>
+          </div>
+          <p class="step-instruction">
+            Réfléchis à nouveau à la table : si l’aire $A$ devient plus petite mais que la force $F$
+            est la même, que devient le rapport $F/A$&nbsp;?
+          </p>
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-primary" onclick="goToStep('step-pretest')">
+                Refaire la question de diagnostic
+              </button>
+            </div>
+        <div class="actions-right">
+          <span class="hint">Si tu réponds juste, tu passeras à l’étape suivante.</span>
+        </div>
+      </div>
+    </section>
+
+        <!-- Etape 1c : remédiation unités -->
+        <section class="step" id="step-remediation-unites" data-index="2">
+          <div class="step-tag">Étape 2 bis · Aide ciblée</div>
+          <h2 class="step-title">Revoir les unités de pression</h2>
+          <div class="reading-box">
+            <strong>À retenir</strong><br />
+            $1\,\text{bar} = 1.0 \times 10^5\,\text{Pa}$<br />
+            $1\,\text{atm} \approx 1.013 \times 10^5\,\text{Pa}$<br />
+            $760\,\text{mmHg} \approx 1\,\text{atm} \approx 1.0\,\text{bar}$<br />
+            $1\,\text{mmHg} \approx 133.3\,\text{Pa}$
+          </div>
+          <p class="step-instruction">
+            Convertis toujours en Pascal ou en bar pour comparer. Exemple : $1.0\,\text{bar} = 100{\,}000\,\text{Pa}$.
+          </p>
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-primary" onclick="goToStep('step-unites')">Refaire la question</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 2 : unités de pression -->
+        <section class="step" id="step-unites" data-index="2">
+          <div class="step-tag">Étape 2 · Unités de pression</div>
+          <h2 class="step-title">Pascal, bar et mmHg</h2>
+          <div class="reading-box">
+            <strong>Lecture guidée</strong><br />
+            Relis dans le support la partie où les unités de pression sont introduites
+            (<strong>« Definition » et tableau des unités</strong>, section <em>Druck</em>). Note sur ton
+            brouillon&nbsp;:
+            <br />• $1\,\text{Pa} = 1\,\text{N}/\text{m}^2$<br />
+            • $1\,\text{bar} = 10^5\,\text{Pa}$<br />
+            • $1\,\text{mmHg} \approx 133.3\,\text{Pa}$ (colonne de mercure). 
+          </div>
+
+          <p class="question">
+            1. La pression atmosphérique vaut environ $1.0\,\text{bar}$. Quelle est la meilleure
+            approximation en Pascal&nbsp;?
+          </p>
+          <div class="options">
+            <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
+              $1.0\,\text{Pa}$
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'unites1', true)">
+              $1.0 \times 10^5\,\text{Pa}$
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
+              $1.0 \times 10^3\,\text{Pa}$
+            </button>
+          </div>
+
+          <p class="question">
+            2. On lit sur un baromètre $760\,\text{mmHg}$. À quoi cela correspond-il le plus
+            probablement&nbsp;?
+          </p>
+          <div class="options">
+            <button class="option-btn" onclick="handleMCQ(this, 'unites2', true)">
+              À peu près à la pression atmosphérique normale.
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
+              À un vide presque parfait.
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
+              À $760\,\text{Pa}$, donc beaucoup moins que $1\,\text{bar}$.
+            </button>
+          </div>
+
+          <div id="feedback-unites" class="feedback"></div>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-pretest')">← Étape précédente</button>
+            </div>
+            <div class="actions-right">
+              <button class="btn-primary" onclick="goToStep('step-hydrostatique')">
+                Étape suivante: pression dans un liquide →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 3 : dérivation p = p0 + rho g h -->
+        <section class="step" id="step-hydrostatique" data-index="3">
+          <div class="step-tag">Étape 3 · Pression hydrostatique</div>
+          <h2 class="step-title">D’où vient $p = p_0 + \rho g h$&nbsp;?</h2>
+
+          <div class="reading-box">
+            <strong>À faire au calme</strong><br />
+            1. Dans le support, lis attentivement la section
+            <strong>« Druck in einer ruhenden Flüssigkeit »</strong> (la colonne de liquide avec densité
+            $\rho$, hauteur $h$ et section $S$). <br />
+            2. Reproduis sur ton brouillon le schéma de la colonne (surface du haut à pression
+            $p_0$, surface du bas à pression $p$). Écris toutes les forces qui agissent sur la
+            colonne.
+          </div>
+
+          <div class="formula-box">
+            <div class="label">Dérivation à connaître (résumé)</div>
+            <div class="math">
+              Poids de la colonne : $F = mg = \rho V g = \rho S h g$<br />
+              Pression due à la colonne : $p_{\text{colonne}} = \dfrac{F}{S} = \rho g h$<br />
+              Pression totale en bas : $p = p_0 + \rho g h$
+            </div>
+            <div class="explain">
+              $p_0$ : pression à la surface (souvent pression atmosphérique), $h$ : profondeur
+              sous cette surface.
+            </div>
+          </div>
+
+          <p class="question">
+            On est dans un lac d’eau ($\rho \approx 1000\,\text{kg/m}^3$). On plonge à $h = 5.0\,\text{m}$
+            sous la surface. En négligeant la petite différence entre $1.013$ et $1.0$, la pression
+            totale en profondeur est la plus proche de&nbsp;:
+          </p>
+
+          <div class="options">
+            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
+              $p \approx 5.0 \times 10^4\,\text{Pa}$ (seule la colonne d’eau compte).
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', true)">
+              $p \approx 1.5 \times 10^5\,\text{Pa}$ (pression atmosphérique + eau).
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
+              $p \approx 1.0 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
+            </button>
+            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
+              $p \approx 10 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
+            </button>
+          </div>
+
+          <div id="feedback-hydro" class="feedback"></div>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-unites')">← Étape précédente</button>
+            </div>
+            <div class="actions-right">
+              <button class="btn-primary" onclick="goToStep('step-torricelli')">
+                Étape suivante: colonne de Hg →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 3 bis : remédiation hydrostatique -->
+        <section class="step" id="step-remediation-hydro" data-index="3">
+          <div class="step-tag">Étape 3 bis · Aide ciblée</div>
+          <h2 class="step-title">Additionner p0 et la colonne</h2>
+          <div class="reading-box">
+            <strong>Rappel</strong><br />
+            $p = p_0 + \rho g h$<br />
+            $p_0$ : pression à la surface (souvent $1.0\,\text{bar}$).<br />
+            $\rho g h$ : pression ajoutée par la colonne de liquide (en Pa).
+          </div>
+          <p class="step-instruction">
+            Calcule toujours $\rho g h$ puis ajoute $p_0$. Pour l’eau : $1000 \times 9.81 \times h$ donne des Pascals.
+          </p>
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-primary" onclick="goToStep('step-hydrostatique')">Refaire la question</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 4 : mmHg & Torricelli -->
+        <section class="step" id="step-torricelli" data-index="4">
+          <div class="step-tag">Étape 4 · Colonne de mercure</div>
+          <h2 class="step-title">Torricelli et les $\text{mmHg}$</h2>
+
+          <div class="reading-box">
+            <strong>Lecture ciblée</strong><br />
+            Dans le support, trouve le paragraphe sur le <strong>baromètre de Torricelli</strong> (tube
+            rempli de mercure renversé dans un réservoir). Observe bien&nbsp;:
+            <br />
+            • la hauteur $h$ de mercure dans le tube,<br />
+            • le vide au-dessus du mercure,<br />
+            • la pression atmosphérique qui agit sur le réservoir. 
+          </div>
+
+          <p class="step-instruction">
+            On admet ici que la masse volumique du mercure vaut<br />
+            $\rho_{\text{Hg}} = 13.6 \times 10^3\,\text{kg/m}^3$ et que $g = 9.81\,\text{m/s}^2$.
+          </p>
+
+          <p class="question">
+            Utilise la formule $p = \rho g h$ pour retrouver la hauteur de mercure qui correspond à
+            $p_0 = 1.01 \times 10^5\,\text{Pa}$. Donne ta réponse en mm.<br /><br />
+            (Indice&nbsp;: isole $h$ puis calcule numériquement.)
+          </p>
+
+          <div class="numeric-input-row">
+            <input type="number" id="input-hg" placeholder="hauteur en mm" />
+            <button class="btn-primary" onclick="checkNumeric('hg', 760, 40)">
+              Vérifier
+            </button>
+          </div>
+          <div id="feedback-hg" class="feedback"></div>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-hydrostatique')">← Étape précédente</button>
+            </div>
+            <div class="actions-right">
+              <button class="btn-primary" onclick="goToStep('step-exo-hydro')">
+                Étape suivante: exercices d’application →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 4 bis : remédiation Hg -->
+        <section class="step" id="step-remediation-hg" data-index="4">
+          <div class="step-tag">Étape 4 bis · Aide ciblée</div>
+          <h2 class="step-title">Hauteur de mercure et pression</h2>
+          <div class="reading-box">
+            <strong>Formule</strong><br />
+            $p = \rho g h \quad \Rightarrow \quad h = \dfrac{p}{\rho g}$<br />
+            Pour $p \approx 1.0 \times 10^5\,\text{Pa}$, $\rho_{\text{Hg}} = 13.6 \times 10^3\,\text{kg/m}^3$, $g = 9.81$ :
+            $h \approx 0.76\,\text{m} = 760\,\text{mm}$.
+          </div>
+          <p class="step-instruction">
+            Si ton résultat est loin de 760 mm, vérifie les unités (m ↔ mm) et les puissances de 10.
+          </p>
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-primary" onclick="goToStep('step-torricelli')">Refaire la question</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etape 5 : exercices d'hydrostatique simples -->
+        <section class="step" id="step-exo-hydro" data-index="5">
+          <div class="step-tag">Étape 5 · Applications</div>
+          <h2 class="step-title">Petits exercices d’hydrostatique</h2>
+
+          <p class="step-instruction">
+            Pour chaque question, fais un croquis, écris la formule $p = p_0 + \rho g h$ et les
+            données, puis calcule. Tu peux arrondir les résultats raisonnablement.
+          </p>
+
+          <p class="question">
+            1. À quelle profondeur sous la surface de l’eau la pression totale atteint-elle environ
+            $3.0\,\text{bar}$ (en prenant $p_0 \approx 1.0\,\text{bar}$)&nbsp;?<br />
+            Donne ta réponse en mètres (approximation).
+          </p>
+
+          <div class="numeric-input-row">
+            <input type="number" id="input-3bar" placeholder="profondeur en m" />
+            <button class="btn-primary" onclick="checkNumeric('3bar', 20, 5)">
+              Vérifier
+            </button>
+          </div>
+
+          <p class="question">
+            2. On veut un manomètre à eau qui mesure la pression atmosphérique comme une hauteur
+            d’eau équivalente à $1.0\,\text{atm}$. À peu près quelle hauteur d’eau faut-il, en mètres&nbsp;?
+          </p>
+
+          <div class="numeric-input-row">
+            <input type="number" id="input-watercol" placeholder="hauteur en m" />
+            <button class="btn-primary" onclick="checkNumeric('watercol', 10, 2)">
+              Vérifier
+            </button>
+          </div>
+
+          <div id="feedback-exos" class="feedback"></div>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-torricelli')">← Étape précédente</button>
+            </div>
+          <div class="actions-right">
+            <button class="btn-primary" onclick="goToStep('step-exo-avance')">
+              Étape suivante: mise en situation →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Etape 6 : exercices d'application avancés -->
+      <section class="step" id="step-exo-avance" data-index="6">
+        <div class="step-tag">Étape 6 · Mise en situation</div>
+        <h2 class="step-title">Vérifie ta maîtrise</h2>
+
+        <p class="step-instruction">
+          Deux situations pour combiner unités et pression hydrostatique. Utilise $p = p_0 + \rho g h$
+          avec $g \approx 9.81\,\text{m/s}^2$ et, sauf mention contraire, $p_0 \approx 1.0\,\text{bar}$.
+        </p>
+
+        <p class="question">
+          1. En plongée (eau de mer, prends $\rho \approx 1025\,\text{kg/m}^3$), à $18.0\,\text{m}$ de profondeur
+          la pression totale vaut environ combien en bar&nbsp;?
+        </p>
+        <div class="numeric-input-row">
+          <input type="number" id="input-deepbar" step="0.1" placeholder="pression en bar" />
+          <button class="btn-primary" onclick="checkNumeric('deepbar', 2.8, 0.3)">
+            Vérifier
+          </button>
+        </div>
+
+        <p class="question">
+          2. Dans un bassin d’eau douce ($\rho \approx 1000\,\text{kg/m}^3$), à $12.0\,\text{m}$ la pression totale
+          en mmHg est proche de&nbsp;?
+        </p>
+        <div class="numeric-input-row">
+          <input type="number" id="input-mmhgdepth" step="10" placeholder="pression en mmHg" />
+          <button class="btn-primary" onclick="checkNumeric('mmhgdepth', 1630, 150)">
+            Vérifier
+          </button>
+        </div>
+
+        <div id="feedback-avance" class="feedback"></div>
+
+        <div class="actions-row">
+          <div class="actions-left">
+            <button class="btn-secondary" onclick="goToStep('step-exo-hydro')">← Étape précédente</button>
+          </div>
+          <div class="actions-right">
+            <button class="btn-primary" onclick="goToStep('step-final')">
+              Étape suivante: bilan →
+            </button>
+          </div>
+        </div>
+      </section>
+
+    <!-- Étape finale : bilan -->
+        <section class="step" id="step-final" data-index="7">
+          <div class="step-tag">Étape 7 · Bilan</div>
+          <h2 class="step-title">Où en es-tu&nbsp;?</h2>
+
+          <p class="step-instruction">
+            Avant de rendre le support ou de passer à autre chose, vérifie mentalement si tu es
+            capable de faire les actions suivantes <strong>sans regarder</strong> le document&nbsp;:
+          </p>
+
+          <ul class="side-list" style="margin-top: 6px; margin-bottom: 8px;">
+            <li>Expliquer la différence entre force et pression, avec un exemple (chaussures / ski).</li>
+            <li>Convertir une pression de bar en Pascal et l’inverse.</li>
+            <li>Dire à quoi correspond physiquement « $1\,\text{mmHg}$ ».</li>
+            <li>Écrire et expliquer la formule $p = p_0 + \rho g h$.</li>
+            <li>Calculer la pression à une certaine profondeur dans l’eau.</li>
+          </ul>
+
+          <p class="step-instruction">
+            Si tu bloques sur un point, retourne à l’étape correspondante (unités, pression dans un
+            liquide, colonne de mercure) et refais les questions. C’est exactement le principe de
+            l’enseignement programmé&nbsp;: avancer en petites marches, avec rétroaction immédiate. 
+          </p>
+
+          <div class="actions-row">
+            <div class="actions-left">
+              <button class="btn-secondary" onclick="goToStep('step-exo-avance')">← Revenir aux exercices</button>
+            </div>
+            <div class="actions-right">
+              <span class="hint">Quand tout est OK pour toi, tu as terminé la séquence.</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Colonne latérale : mémo / aide -->
+    <aside class="card">
+      <div class="side-section">
+        <div class="side-card-title">Formules essentielles</div>
+        <div class="formula-box" style="margin-bottom: 10px;">
+          <div class="math">$p = \dfrac{F}{A}$</div>
+          <div class="explain">Pression comme force par surface.</div>
+        </div>
+        <div class="formula-box" style="margin-bottom: 10px;">
+          <div class="math">$p = p_0 + \rho g h$</div>
+          <div class="explain">Pression totale dans un liquide en profondeur $h$.</div>
+        </div>
+        <div class="formula-box">
+          <div class="math">
+            $1\,\text{bar} = 10^5\,\text{Pa}$<br />
+            $1\,\text{mmHg} \approx 133.3\,\text{Pa}$<br />
+            $1\,\text{atm} \approx 1.013 \times 10^5\,\text{Pa} \approx 760\,\text{mmHg}$
+          </div>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <div class="side-card-title">Stratégie de travail</div>
+        <ul class="side-list">
+          <li>Lis toujours le paragraphe indiqué dans le support <em>avant</em> de répondre.</li>
+          <li>Note les formules et unités sur ton brouillon.</li>
+          <li>En cas d’erreur, lis la rétroaction et reviens en arrière si nécessaire.</li>
+        </ul>
+        <div class="side-note">
+          Tu peux utiliser ce panneau comme mémo durant toute la séquence (comme un
+          « fichier d’apprentissage » simplifié). 
+        </div>
+      </div>
+
+      <div class="side-section">
+        <div class="side-card-title">Avancement</div>
+        <div class="score-box">
+          <div class="score-value" id="score-display">0 / 8</div>
+          <div class="score-label">
+            Étapes validées (réponse correcte au moins une fois).
+          </div>
+        </div>
+        <p class="side-note">
+          Ce nombre ne sert pas pour une note, uniquement pour t’aider à voir ce que tu as
+          déjà consolidé.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const stepsOrder = [
+      "step-intro",
+      "step-pretest",
+      "step-unites",
+      "step-hydrostatique",
+      "step-torricelli",
+      "step-exo-hydro",
+      "step-exo-avance",
+      "step-final"
+    ];
+
+    // Considère l'étape d'intro comme validée d'office pour éviter un blocage à 5/7.
+    const validatedSteps = new Set(["step-intro"]);
+
+    function updateProgress() {
+      const total = stepsOrder.length;
+      const done = validatedSteps.size;
+      const percent = (done / total) * 100;
+
+      document.getElementById("progress-bar").style.width = percent + "%";
+      document.getElementById("progress-text").textContent =
+        done + " / " + total + " étapes validées";
+      document.getElementById("score-display").textContent =
+        done + " / " + total;
+    }
+
+    function goToStep(id) {
+      document.querySelectorAll(".step").forEach((s) => s.classList.remove("active"));
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add("active");
+      }
+      // Si on atteint l'étape finale, on la valide automatiquement.
+      if (id === "step-final") {
+        validatedSteps.add("step-final");
+      }
+      // Recalculer la progression (au cas où une étape vient d'être validée)
+      updateProgress();
+    }
+
+    function handleMCQ(button, group, isCorrect) {
+      const container = button.parentElement;
+      const feedbackId =
+        group === "pretest" ? "feedback-pretest"
+        : group === "unites1" || group === "unites2" ? "feedback-unites"
+        : group === "hydro1" ? "feedback-hydro"
+        : "";
+
+      if (container) {
+        container.querySelectorAll(".option-btn").forEach((btn) => {
+          btn.classList.remove("correct", "incorrect");
+        });
+      }
+
+      if (isCorrect) {
+        button.classList.add("correct");
+        if (feedbackId) {
+          const fb = document.getElementById(feedbackId);
+          fb.textContent = "✔ Correct, tu peux passer à l’étape suivante.";
+          fb.classList.add("ok");
+          fb.classList.remove("ko");
+        }
+
+        // Valider l'étape correspondante
+        if (group === "pretest") {
+          validatedSteps.add("step-pretest");
+          // Si bonne réponse directe, on saute l’étape de remédiation
+          goToStep("step-unites");
+        } else if (group === "unites1" || group === "unites2") {
+          validatedSteps.add("step-unites");
+        } else if (group === "hydro1") {
+          validatedSteps.add("step-hydrostatique");
+        }
+      } else {
+        button.classList.add("incorrect");
+        if (feedbackId) {
+          const fb = document.getElementById(feedbackId);
+          fb.classList.remove("ok");
+          fb.classList.add("ko");
+          if (group === "pretest") {
+            fb.textContent =
+              "✖ Pas tout à fait. Rappelle-toi que la pression dépend de la surface de contact. Tu vas passer par une courte explication.";
+            setTimeout(() => goToStep("step-remediation-pression"), 900);
+          } else if (group === "unites1" || group === "unites2") {
+            fb.textContent =
+              "✖ Vérifie les équivalences entre bar, Pa et mmHg dans le support.";
+            setTimeout(() => goToStep("step-remediation-unites"), 900);
+          } else if (group === "hydro1") {
+            fb.textContent =
+              "✖ Attention : la pression totale au fond = pression atmosphérique + pression de la colonne d’eau.";
+            setTimeout(() => goToStep("step-remediation-hydro"), 900);
+          }
+        }
+      }
+      updateProgress();
+    }
+
+    function checkNumeric(kind, expected, tolerance) {
+      let inputId, feedbackId, stepId, remediationId;
+      if (kind === "hg") {
+        inputId = "input-hg";
+        feedbackId = "feedback-hg";
+        stepId = "step-torricelli";
+        remediationId = "step-remediation-hg";
+      } else if (kind === "3bar") {
+        inputId = "input-3bar";
+        feedbackId = "feedback-exos";
+        stepId = "step-exo-hydro";
+        remediationId = "step-remediation-exo";
+      } else if (kind === "watercol") {
+        inputId = "input-watercol";
+        feedbackId = "feedback-exos";
+        stepId = "step-exo-hydro";
+        remediationId = "step-remediation-exo";
+      } else if (kind === "deepbar") {
+        inputId = "input-deepbar";
+        feedbackId = "feedback-avance";
+        stepId = "step-exo-avance";
+        remediationId = "step-remediation-avance";
+      } else if (kind === "mmhgdepth") {
+        inputId = "input-mmhgdepth";
+        feedbackId = "feedback-avance";
+        stepId = "step-exo-avance";
+        remediationId = "step-remediation-avance";
+      }
+
+      const value = parseFloat(document.getElementById(inputId).value);
+      const fb = document.getElementById(feedbackId);
+      if (isNaN(value)) {
+        fb.textContent = "Entre une valeur numérique (nombre).";
+        fb.classList.add("ko");
+        fb.classList.remove("ok");
+        return;
+      }
+
+      const diff = Math.abs(value - expected);
+      if (diff <= tolerance) {
+        fb.textContent = "✔ Résultat cohérent (tolérance ±" + tolerance + ").";
+        fb.classList.add("ok");
+        fb.classList.remove("ko");
+        validatedSteps.add(stepId);
+      } else {
+        fb.textContent =
+          "✖ Résultat éloigné. Repart de la formule et vérifie tes unités.";
+        fb.classList.add("ko");
+        fb.classList.remove("ok");
+        if (remediationId) {
+          setTimeout(() => goToStep(remediationId), 900);
+        }
+      }
+      updateProgress();
+    }
+
+    // Initialisation
+    updateProgress();
+  </script>
+</body>
+</html>
