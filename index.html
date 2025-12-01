@@ -629,8 +629,8 @@
                 Refaire la question de diagnostic
               </button>
             </div>
-        <div class="actions-right">
-          <span class="hint">Si tu réponds juste, tu passeras à l’étape suivante.</span>
+            <div class="actions-right">
+              <span class="hint">Si tu réponds juste, tu passeras à l’étape suivante.</span>
         </div>
       </div>
     </section>
@@ -759,9 +759,6 @@
             </button>
             <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
               $p \approx 1.0 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
-              $p \approx 10 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
             </button>
           </div>
 
@@ -906,16 +903,34 @@
             <div class="actions-left">
               <button class="btn-secondary" onclick="goToStep('step-torricelli')">← Étape précédente</button>
             </div>
-          <div class="actions-right">
-            <button class="btn-primary" onclick="goToStep('step-exo-avance')">
-              Étape suivante: mise en situation →
-            </button>
-          </div>
+        <div class="actions-right">
+          <button class="btn-primary" onclick="goToStep('step-exo-avance')">
+            Étape suivante: mise en situation →
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
+    <!-- Etape 5 bis : remédiation exercices simples -->
+    <section class="step" id="step-remediation-exo" data-index="5">
+      <div class="step-tag">Étape 5 bis · Aide ciblée</div>
+      <h2 class="step-title">Relire p = p0 + ρgh pour l’eau</h2>
+      <div class="reading-box">
+        <strong>Ordres de grandeur</strong><br />
+        Dans l’eau : $\rho \approx 1000\,\text{kg/m}^3$, donc $ \rho g h \approx 10^4 \times h$ en Pa.<br />
+        $2.0\,\text{bar}$ de plus ≈ $2 \times 10^5\,\text{Pa}$ ⇒ profondeur ≈ $20\,\text{m}$.
+      </div>
+      <p class="step-instruction">
+        Calcule d’abord la surpression ($p - p_0$) puis divise par $\rho g$ pour trouver $h$.
+      </p>
+      <div class="actions-row">
+        <div class="actions-left">
+          <button class="btn-primary" onclick="goToStep('step-exo-hydro')">Refaire les exercices</button>
+        </div>
+      </div>
+    </section>
 
-      <!-- Etape 6 : exercices d'application avancés -->
-      <section class="step" id="step-exo-avance" data-index="6">
+    <!-- Etape 6 : exercices d'application avancés -->
+    <section class="step" id="step-exo-avance" data-index="6">
         <div class="step-tag">Étape 6 · Mise en situation</div>
         <h2 class="step-title">Vérifie ta maîtrise</h2>
 
@@ -952,13 +967,33 @@
           <div class="actions-left">
             <button class="btn-secondary" onclick="goToStep('step-exo-hydro')">← Étape précédente</button>
           </div>
-          <div class="actions-right">
-            <button class="btn-primary" onclick="goToStep('step-final')">
-              Étape suivante: bilan →
-            </button>
-          </div>
+        <div class="actions-right">
+          <button class="btn-primary" onclick="goToStep('step-final')">
+            Étape suivante: bilan →
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
+
+    <!-- Etape 6 bis : remédiation avancée -->
+    <section class="step" id="step-remediation-avance" data-index="6">
+      <div class="step-tag">Étape 6 bis · Aide ciblée</div>
+      <h2 class="step-title">Comparer unités et profondeurs</h2>
+      <div class="reading-box">
+        <strong>Repères utiles</strong><br />
+        Eau de mer : $\rho \approx 1025\,\text{kg/m}^3$ → $ \rho g h \approx 1.0 \times 10^4 h$ Pa.<br />
+        1 bar ≈ $10^5$ Pa, 1 bar ≈ 760 mmHg. À 10 m d’eau, ajoute environ 1 bar.
+      </div>
+      <p class="step-instruction">
+        Convertis d’abord en bar ou Pa, ajoute $p_0$, puis convertis en mmHg si besoin
+        ($p\,\text{[Pa]} / 133.3$ donne des mmHg).
+      </p>
+      <div class="actions-row">
+        <div class="actions-left">
+          <button class="btn-primary" onclick="goToStep('step-exo-avance')">Refaire les exercices avancés</button>
+        </div>
+      </div>
+    </section>
 
     <!-- Étape finale : bilan -->
         <section class="step" id="step-final" data-index="7">
@@ -1129,6 +1164,7 @@
           if (group === "pretest") {
             fb.textContent =
               "✖ Pas tout à fait. Rappelle-toi que la pression dépend de la surface de contact. Tu vas passer par une courte explication.";
+            // Ramification : aller vers la remédiation
             setTimeout(() => goToStep("step-remediation-pression"), 900);
           } else if (group === "unites1" || group === "unites2") {
             fb.textContent =
