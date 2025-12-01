@@ -272,6 +272,51 @@
       color: var(--muted);
     }
 
+    .reading-guard {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      background: rgba(34, 211, 238, 0.08);
+      padding: 10px 12px;
+      margin: 10px 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .reading-guard.done {
+      border-color: rgba(74, 222, 128, 0.6);
+      background: rgba(34, 197, 94, 0.08);
+      color: var(--text);
+    }
+
+    .reading-guard button {
+      margin-top: 8px;
+    }
+
+    .lockable {
+      position: relative;
+      transition: opacity 0.2s ease;
+    }
+
+    .lockable.locked {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .lockable.locked::after {
+      content: "Lis la section demandée puis valide la lecture pour débloquer ces questions.";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.45);
+      color: var(--text);
+      font-size: 0.82rem;
+      border-radius: 0.8rem;
+    }
+
     .question {
       margin-top: 6px;
       margin-bottom: 10px;
@@ -563,27 +608,37 @@
           <div class="step-tag">Étape 1 · Diagnostic</div>
           <h2 class="step-title">Pression ou force&nbsp;?</h2>
           <div class="reading-box">
-            Sans lire encore le support, réponds à la question suivante. Cela sert à savoir
-            si tu peux sauter une partie de l’explication.
+            Ouvre ton support, section <strong>« Druck »</strong> (définition de la pression) et lis le
+            premier paragraphe qui illustre $p = \dfrac{F}{A}$. Note la formule sur ton brouillon
+            puis valide la lecture ci-dessous.
           </div>
-          <p class="question">
-            On pose un bloc de $100\,\text{N}$ sur<br />
-            (A) une table de surface $1.0\,\text{m}^2$<br />
-            (B) la même table mais sur une planchette de $0.10\,\text{m}^2$.<br /><br />
-            Dans quel cas la <strong>pression</strong> sur la table est-elle la plus grande&nbsp;?
-          </p>
-          <div class="options">
-            <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
-              Dans le cas (A), car la force est la même.
-            </button>
-            <button class="option-btn" data-correct="true" onclick="handleMCQ(this, 'pretest', true)">
-              Dans le cas (B), car la même force agit sur une plus petite surface.
-            </button>
-            <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
-              La pression est identique dans (A) et (B).
+          <div class="reading-guard" data-step-guard="step-pretest">
+            <div>Confirmes-tu avoir lu la section « Druck » avant de répondre&nbsp;?</div>
+            <button class="btn-primary" onclick="unlockStep('step-pretest')">
+              J’ai lu la section → débloquer la question
             </button>
           </div>
-          <div id="feedback-pretest" class="feedback"></div>
+
+          <div class="lockable" data-step-lock="step-pretest">
+            <p class="question">
+              On pose un bloc de $100\,\text{N}$ sur<br />
+              (A) une table de surface $1.0\,\text{m}^2$<br />
+              (B) la même table mais sur une planchette de $0.10\,\text{m}^2$.<br /><br />
+              Dans quel cas la <strong>pression</strong> sur la table est-elle la plus grande&nbsp;?
+            </p>
+            <div class="options">
+              <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
+                Dans le cas (A), car la force est la même.
+              </button>
+              <button class="option-btn" data-correct="true" onclick="handleMCQ(this, 'pretest', true)">
+                Dans le cas (B), car la même force agit sur une plus petite surface.
+              </button>
+              <button class="option-btn" data-correct="false" onclick="handleMCQ(this, 'pretest', false)">
+                La pression est identique dans (A) et (B).
+              </button>
+            </div>
+            <div id="feedback-pretest" class="feedback"></div>
+          </div>
 
           <div class="actions-row">
             <div class="actions-left">
@@ -670,39 +725,48 @@
             • $1\,\text{mmHg} \approx 133.3\,\text{Pa}$ (colonne de mercure). 
           </div>
 
-          <p class="question">
-            1. La pression atmosphérique vaut environ $1.0\,\text{bar}$. Quelle est la meilleure
-            approximation en Pascal&nbsp;?
-          </p>
-          <div class="options">
-            <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
-              $1.0\,\text{Pa}$
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'unites1', true)">
-              $1.0 \times 10^5\,\text{Pa}$
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
-              $1.0 \times 10^3\,\text{Pa}$
+          <div class="reading-guard" data-step-guard="step-unites">
+            <div>Lis ces lignes dans le support (« Definition » + tableau des unités) puis valide pour accéder aux questions.</div>
+            <button class="btn-primary" onclick="unlockStep('step-unites')">
+              J’ai lu la section → débloquer les questions
             </button>
           </div>
 
-          <p class="question">
-            2. On lit sur un baromètre $760\,\text{mmHg}$. À quoi cela correspond-il le plus
-            probablement&nbsp;?
-          </p>
-          <div class="options">
-            <button class="option-btn" onclick="handleMCQ(this, 'unites2', true)">
-              À peu près à la pression atmosphérique normale.
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
-              À un vide presque parfait.
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
-              À $760\,\text{Pa}$, donc beaucoup moins que $1\,\text{bar}$.
-            </button>
-          </div>
+          <div class="lockable" data-step-lock="step-unites">
+            <p class="question">
+              1. La pression atmosphérique vaut environ $1.0\,\text{bar}$. Quelle est la meilleure
+              approximation en Pascal&nbsp;?
+            </p>
+            <div class="options">
+              <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
+                $1.0\,\text{Pa}$
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'unites1', true)">
+                $1.0 \times 10^5\,\text{Pa}$
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'unites1', false)">
+                $1.0 \times 10^3\,\text{Pa}$
+              </button>
+            </div>
 
-          <div id="feedback-unites" class="feedback"></div>
+            <p class="question">
+              2. On lit sur un baromètre $760\,\text{mmHg}$. À quoi cela correspond-il le plus
+              probablement&nbsp;?
+            </p>
+            <div class="options">
+              <button class="option-btn" onclick="handleMCQ(this, 'unites2', true)">
+                À peu près à la pression atmosphérique normale.
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
+                À un vide presque parfait.
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'unites2', false)">
+                À $760\,\text{Pa}$, donc beaucoup moins que $1\,\text{bar}$.
+              </button>
+            </div>
+
+            <div id="feedback-unites" class="feedback"></div>
+          </div>
 
           <div class="actions-row">
             <div class="actions-left">
@@ -744,25 +808,34 @@
             </div>
           </div>
 
-          <p class="question">
-            On est dans un lac d’eau ($\rho \approx 1000\,\text{kg/m}^3$). On plonge à $h = 5.0\,\text{m}$
-            sous la surface. En négligeant la petite différence entre $1.013$ et $1.0$, la pression
-            totale en profondeur est la plus proche de&nbsp;:
-          </p>
-
-          <div class="options">
-            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
-              $p \approx 5.0 \times 10^4\,\text{Pa}$ (seule la colonne d’eau compte).
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', true)">
-              $p \approx 1.5 \times 10^5\,\text{Pa}$ (pression atmosphérique + eau).
-            </button>
-            <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
-              $p \approx 1.0 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
+          <div class="reading-guard" data-step-guard="step-hydrostatique">
+            <div>Valide que tu as lu « Druck in einer ruhenden Flüssigkeit » et reproduit le schéma avant de répondre.</div>
+            <button class="btn-primary" onclick="unlockStep('step-hydrostatique')">
+              J’ai lu / recopié le schéma → débloquer
             </button>
           </div>
 
-          <div id="feedback-hydro" class="feedback"></div>
+          <div class="lockable" data-step-lock="step-hydrostatique">
+            <p class="question">
+              On est dans un lac d’eau ($\rho \approx 1000\,\text{kg/m}^3$). On plonge à $h = 5.0\,\text{m}$
+              sous la surface. En négligeant la petite différence entre $1.013$ et $1.0$, la pression
+              totale en profondeur est la plus proche de&nbsp;:
+            </p>
+
+            <div class="options">
+              <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
+                $p \approx 5.0 \times 10^4\,\text{Pa}$ (seule la colonne d’eau compte).
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'hydro1', true)">
+                $p \approx 1.5 \times 10^5\,\text{Pa}$ (pression atmosphérique + eau).
+              </button>
+              <button class="option-btn" onclick="handleMCQ(this, 'hydro1', false)">
+                $p \approx 1.0 \times 10^5\,\text{Pa}$ (la même qu’à la surface).
+              </button>
+            </div>
+
+            <div id="feedback-hydro" class="feedback"></div>
+          </div>
 
           <div class="actions-row">
             <div class="actions-left">
@@ -816,19 +889,28 @@
             $\rho_{\text{Hg}} = 13.6 \times 10^3\,\text{kg/m}^3$ et que $g = 9.81\,\text{m/s}^2$.
           </p>
 
-          <p class="question">
-            Utilise la formule $p = \rho g h$ pour retrouver la hauteur de mercure qui correspond à
-            $p_0 = 1.01 \times 10^5\,\text{Pa}$. Donne ta réponse en mm.<br /><br />
-            (Indice&nbsp;: isole $h$ puis calcule numériquement.)
-          </p>
-
-          <div class="numeric-input-row">
-            <input type="number" id="input-hg" placeholder="hauteur en mm" />
-            <button class="btn-primary" onclick="checkNumeric('hg', 760, 40)">
-              Vérifier
+          <div class="reading-guard" data-step-guard="step-torricelli">
+            <div>Lis le paragraphe sur le baromètre de Torricelli et observe le schéma avant de faire le calcul.</div>
+            <button class="btn-primary" onclick="unlockStep('step-torricelli')">
+              J’ai lu / observé → débloquer le calcul
             </button>
           </div>
-          <div id="feedback-hg" class="feedback"></div>
+
+          <div class="lockable" data-step-lock="step-torricelli">
+            <p class="question">
+              Utilise la formule $p = \rho g h$ pour retrouver la hauteur de mercure qui correspond à
+              $p_0 = 1.01 \times 10^5\,\text{Pa}$. Donne ta réponse en mm.<br /><br />
+              (Indice&nbsp;: isole $h$ puis calcule numériquement.)
+            </p>
+
+            <div class="numeric-input-row">
+              <input type="number" id="input-hg" placeholder="hauteur en mm" />
+              <button class="btn-primary" onclick="checkNumeric('hg', 760, 40)">
+                Vérifier
+              </button>
+            </div>
+            <div id="feedback-hg" class="feedback"></div>
+          </div>
 
           <div class="actions-row">
             <div class="actions-left">
@@ -872,32 +954,41 @@
             données, puis calcule. Tu peux arrondir les résultats raisonnablement.
           </p>
 
-          <p class="question">
-            1. À quelle profondeur sous la surface de l’eau la pression totale atteint-elle environ
-            $3.0\,\text{bar}$ (en prenant $p_0 \approx 1.0\,\text{bar}$)&nbsp;?<br />
-            Donne ta réponse en mètres (approximation).
-          </p>
-
-          <div class="numeric-input-row">
-            <input type="number" id="input-3bar" placeholder="profondeur en m" />
-            <button class="btn-primary" onclick="checkNumeric('3bar', 20, 5)">
-              Vérifier
+          <div class="reading-guard" data-step-guard="step-exo-hydro">
+            <div>Relis les exemples d’application de $p = p_0 + \rho g h$ dans le support avant de faire ces deux calculs.</div>
+            <button class="btn-primary" onclick="unlockStep('step-exo-hydro')">
+              J’ai lu les exemples → débloquer les exercices
             </button>
           </div>
 
-          <p class="question">
-            2. On veut un manomètre à eau qui mesure la pression atmosphérique comme une hauteur
-            d’eau équivalente à $1.0\,\text{atm}$. À peu près quelle hauteur d’eau faut-il, en mètres&nbsp;?
-          </p>
+          <div class="lockable" data-step-lock="step-exo-hydro">
+            <p class="question">
+              1. À quelle profondeur sous la surface de l’eau la pression totale atteint-elle environ
+              $3.0\,\text{bar}$ (en prenant $p_0 \approx 1.0\,\text{bar}$)&nbsp;?<br />
+              Donne ta réponse en mètres (approximation).
+            </p>
 
-          <div class="numeric-input-row">
-            <input type="number" id="input-watercol" placeholder="hauteur en m" />
-            <button class="btn-primary" onclick="checkNumeric('watercol', 10, 2)">
-              Vérifier
-            </button>
+            <div class="numeric-input-row">
+              <input type="number" id="input-3bar" placeholder="profondeur en m" />
+              <button class="btn-primary" onclick="checkNumeric('3bar', 20, 5)">
+                Vérifier
+              </button>
+            </div>
+
+            <p class="question">
+              2. On veut un manomètre à eau qui mesure la pression atmosphérique comme une hauteur
+              d’eau équivalente à $1.0\,\text{atm}$. À peu près quelle hauteur d’eau faut-il, en mètres&nbsp;?
+            </p>
+
+            <div class="numeric-input-row">
+              <input type="number" id="input-watercol" placeholder="hauteur en m" />
+              <button class="btn-primary" onclick="checkNumeric('watercol', 10, 2)">
+                Vérifier
+              </button>
+            </div>
+
+            <div id="feedback-exos" class="feedback"></div>
           </div>
-
-          <div id="feedback-exos" class="feedback"></div>
 
           <div class="actions-row">
             <div class="actions-left">
@@ -939,29 +1030,38 @@
           avec $g \approx 9.81\,\text{m/s}^2$ et, sauf mention contraire, $p_0 \approx 1.0\,\text{bar}$.
         </p>
 
-        <p class="question">
-          1. En plongée (eau de mer, prends $\rho \approx 1025\,\text{kg/m}^3$), à $18.0\,\text{m}$ de profondeur
-          la pression totale vaut environ combien en bar&nbsp;?
-        </p>
-        <div class="numeric-input-row">
-          <input type="number" id="input-deepbar" step="0.1" placeholder="pression en bar" />
-          <button class="btn-primary" onclick="checkNumeric('deepbar', 2.8, 0.3)">
-            Vérifier
+        <div class="reading-guard" data-step-guard="step-exo-avance">
+          <div>Avant de répondre, relis les repères d’unités (bar ↔ Pa ↔ mmHg) et la formule $p = p_0 + \rho g h$ dans le support.</div>
+          <button class="btn-primary" onclick="unlockStep('step-exo-avance')">
+            J’ai relu les repères → débloquer les exercices
           </button>
         </div>
 
-        <p class="question">
-          2. Dans un bassin d’eau douce ($\rho \approx 1000\,\text{kg/m}^3$), à $12.0\,\text{m}$ la pression totale
-          en mmHg est proche de&nbsp;?
-        </p>
-        <div class="numeric-input-row">
-          <input type="number" id="input-mmhgdepth" step="10" placeholder="pression en mmHg" />
-          <button class="btn-primary" onclick="checkNumeric('mmhgdepth', 1630, 150)">
-            Vérifier
-          </button>
-        </div>
+        <div class="lockable" data-step-lock="step-exo-avance">
+          <p class="question">
+            1. En plongée (eau de mer, prends $\rho \approx 1025\,\text{kg/m}^3$), à $18.0\,\text{m}$ de profondeur
+            la pression totale vaut environ combien en bar&nbsp;?
+          </p>
+          <div class="numeric-input-row">
+            <input type="number" id="input-deepbar" step="0.1" placeholder="pression en bar" />
+            <button class="btn-primary" onclick="checkNumeric('deepbar', 2.8, 0.3)">
+              Vérifier
+            </button>
+          </div>
 
-        <div id="feedback-avance" class="feedback"></div>
+          <p class="question">
+            2. Dans un bassin d’eau douce ($\rho \approx 1000\,\text{kg/m}^3$), à $12.0\,\text{m}$ la pression totale
+            en mmHg est proche de&nbsp;?
+          </p>
+          <div class="numeric-input-row">
+            <input type="number" id="input-mmhgdepth" step="10" placeholder="pression en mmHg" />
+            <button class="btn-primary" onclick="checkNumeric('mmhgdepth', 1630, 150)">
+              Vérifier
+            </button>
+          </div>
+
+          <div id="feedback-avance" class="feedback"></div>
+        </div>
 
         <div class="actions-row">
           <div class="actions-left">
@@ -1082,6 +1182,7 @@
   </div>
 
   <script>
+    const STORAGE_KEY = "pressionProgress_v1";
     const stepsOrder = [
       "step-intro",
       "step-pretest",
@@ -1093,10 +1194,91 @@
       "step-final"
     ];
 
-    // Considère l'étape d'intro comme validée d'office pour éviter un blocage à 5/7.
-    const validatedSteps = new Set(["step-intro"]);
+    const stepsNeedingReading = new Set([
+      "step-pretest",
+      "step-unites",
+      "step-hydrostatique",
+      "step-torricelli",
+      "step-exo-hydro",
+      "step-exo-avance"
+    ]);
 
-    function updateProgress() {
+    const mcqStepMap = {
+      pretest: "step-pretest",
+      unites1: "step-unites",
+      unites2: "step-unites",
+      hydro1: "step-hydrostatique"
+    };
+
+    let validatedSteps = new Set(["step-intro"]);
+    let readingUnlocked = {};
+    let currentStepId = "step-intro";
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.validatedSteps)) {
+          const filtered = parsed.validatedSteps.filter((id) =>
+            stepsOrder.includes(id)
+          );
+          validatedSteps = new Set(filtered);
+        }
+        readingUnlocked = parsed.readingUnlocked || {};
+        currentStepId = parsed.currentStepId || currentStepId;
+      } catch (e) {
+        console.warn("Impossible de charger le cache local, on repart de zéro.");
+      }
+    }
+
+    function persistState() {
+      try {
+        const payload = {
+          validatedSteps: Array.from(validatedSteps),
+          readingUnlocked,
+          currentStepId
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        console.warn("Impossible d'enregistrer la progression.", e);
+      }
+    }
+
+    function isStepUnlocked(stepId) {
+      return !stepsNeedingReading.has(stepId) || !!readingUnlocked[stepId];
+    }
+
+    function applyLockStates() {
+      document.querySelectorAll("[data-step-lock]").forEach((el) => {
+        const stepId = el.getAttribute("data-step-lock");
+        const unlocked = isStepUnlocked(stepId);
+        el.classList.toggle("locked", !unlocked);
+      });
+
+      document.querySelectorAll(".reading-guard").forEach((guard) => {
+        const stepId = guard.getAttribute("data-step-guard");
+        const unlocked = isStepUnlocked(stepId);
+        guard.classList.toggle("done", unlocked);
+        const btn = guard.querySelector("button");
+        if (btn) {
+          btn.disabled = unlocked;
+          btn.textContent = unlocked
+            ? "Lecture validée"
+            : btn.getAttribute("data-default-label") ||
+              btn.textContent ||
+              "Valider la lecture";
+        }
+      });
+    }
+
+    function unlockStep(stepId) {
+      readingUnlocked[stepId] = true;
+      applyLockStates();
+      persistState();
+    }
+
+    function updateProgress(save = true) {
       const total = stepsOrder.length;
       const done = validatedSteps.size;
       const percent = (done / total) * 100;
@@ -1106,29 +1288,54 @@
         done + " / " + total + " étapes validées";
       document.getElementById("score-display").textContent =
         done + " / " + total;
+      if (save) {
+        persistState();
+      }
     }
 
-    function goToStep(id) {
+    function goToStep(id, options = {}) {
       document.querySelectorAll(".step").forEach((s) => s.classList.remove("active"));
+      let finalId = id;
       const target = document.getElementById(id);
-      if (target) {
-        target.classList.add("active");
+      if (!target) {
+        finalId = "step-intro";
+      }
+      const targetElement = document.getElementById(finalId);
+      if (targetElement) {
+        targetElement.classList.add("active");
       }
       // Si on atteint l'étape finale, on la valide automatiquement.
-      if (id === "step-final") {
+      if (finalId === "step-final") {
         validatedSteps.add("step-final");
       }
+      currentStepId = finalId;
+      applyLockStates();
       // Recalculer la progression (au cas où une étape vient d'être validée)
-      updateProgress();
+      updateProgress(!options.skipSave);
     }
 
     function handleMCQ(button, group, isCorrect) {
-      const container = button.parentElement;
+      const stepId = mcqStepMap[group];
       const feedbackId =
         group === "pretest" ? "feedback-pretest"
         : group === "unites1" || group === "unites2" ? "feedback-unites"
         : group === "hydro1" ? "feedback-hydro"
         : "";
+
+      if (stepId && !isStepUnlocked(stepId)) {
+        if (feedbackId) {
+          const fbLocked = document.getElementById(feedbackId);
+          if (fbLocked) {
+            fbLocked.textContent =
+              "Débloque d’abord en confirmant la lecture de la section indiquée.";
+            fbLocked.classList.add("ko");
+            fbLocked.classList.remove("ok");
+          }
+        }
+        return;
+      }
+
+      const container = button.parentElement;
 
       if (container) {
         container.querySelectorAll(".option-btn").forEach((btn) => {
@@ -1209,6 +1416,17 @@
         remediationId = "step-remediation-avance";
       }
 
+      if (!isStepUnlocked(stepId)) {
+        const fbLocked = document.getElementById(feedbackId);
+        if (fbLocked) {
+          fbLocked.textContent =
+            "Confirme la lecture de la section demandée pour débloquer ces calculs.";
+          fbLocked.classList.add("ko");
+          fbLocked.classList.remove("ok");
+        }
+        return;
+      }
+
       const value = parseFloat(document.getElementById(inputId).value);
       const fb = document.getElementById(feedbackId);
       if (isNaN(value)) {
@@ -1236,8 +1454,22 @@
       updateProgress();
     }
 
+    function initializeApp() {
+      loadState();
+      // Toujours valider l'intro par défaut
+      validatedSteps.add("step-intro");
+      if (!document.getElementById(currentStepId)) {
+        currentStepId = "step-intro";
+      }
+      document.querySelectorAll(".step").forEach((s) => s.classList.remove("active"));
+      const start = document.getElementById(currentStepId) ? currentStepId : "step-intro";
+      document.getElementById(start).classList.add("active");
+      applyLockStates();
+      updateProgress();
+    }
+
     // Initialisation
-    updateProgress();
+    initializeApp();
   </script>
 </body>
 </html>
