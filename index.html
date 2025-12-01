@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Programmiertes Lernen – Druck</title>
 
   <!-- Für Formeln im LaTeX-ähnlichen Markdown: $p = \frac{F}{A}$ -->
@@ -1403,6 +1404,23 @@
       }
     }
 
+    function refreshMobileToggleLabels() {
+      document.querySelectorAll(".mobile-toggle").forEach((btn) => {
+        const targetId =
+          btn.textContent.includes("Infos") ? "header-info" : "side-panel";
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        const isCollapsed = target.classList.contains("collapsed-mobile");
+        if (btn.textContent.includes("Infos")) {
+          btn.textContent = isCollapsed ? "Infos anzeigen" : "Infos ausblenden";
+        } else {
+          btn.textContent = isCollapsed
+            ? "Formeln/Memo anzeigen"
+            : "Formeln/Memo ausblenden";
+        }
+      });
+    }
+
     function toggleMobileSection(id, button, showLabel, hideLabel) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -1593,6 +1611,7 @@
       document.getElementById(start).classList.add("active");
       applyLockStates();
       updateProgress();
+      refreshMobileToggleLabels();
     }
 
     initializeApp();
