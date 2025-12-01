@@ -2228,7 +2228,7 @@
     }
 
     function completeFinalStep() {
-      validatedSteps.add("step-final"); validatedSteps.add("step-exo-expert");
+      validatedSteps = new Set(stepsOrder);
       const hint = document.getElementById("final-confirm-hint");
       if (hint) {
         hint.textContent = "✔ Schritt bestätigt – du hast 9/9 erreicht.";
@@ -2236,6 +2236,7 @@
       showReward("Starke Arbeit! Jetzt ab ins Heft.");
       startConfetti();
       updateProgress();
+      persistState();
     }
 
     function initializeApp() {
